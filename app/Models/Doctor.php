@@ -23,19 +23,44 @@ class Doctor extends Model
         'exp_years',
         'specialty_id',
         'bio',
-
     ];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'location' => 'json',
+        'status' => 'boolean',
     ];
 
-    public function specialty(){
+    public function specialty()
+    {
         return $this->belongsTo(Specialty::class, 'specialty_id');
     }
+
+    public function times()
+    {
+        return $this->hasMany(DoctorTime::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // average rating attribute
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
 }
