@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Doctor extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'name',
         'email',
@@ -63,4 +64,13 @@ class Doctor extends Model
         return $this->hasMany(Appointment::class);
     }
 
+    public function chats()
+    {
+        return $this->hasMany(Chat::class , 'doctor_id');
+    }
+
+    public function messages()
+    {
+        return $this->morphMany(Message::class, 'sender');
+    }
 }
