@@ -56,6 +56,7 @@ class ReviewController extends Controller
             'comment' => 'required|string'
         ]);
 
+
         $appointment = Appointment::findOrFail($request->appointment_id);
         $appointmentDateTime = Carbon::parse($appointment['appointment_date'] . ' ' . $appointment['appointment_time']);
 
