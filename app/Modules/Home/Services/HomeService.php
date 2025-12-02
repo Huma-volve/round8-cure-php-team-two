@@ -19,9 +19,9 @@ class HomeService
         return $this->homeRepository->getAllPaginated($perPage);
     }
 
-    public function getDoctorsNearYou(int $perPage = 5)
+    public function getDoctorsNearYou($perPage = 5, $lat = null, $lng = null)
     {
-        return $this->homeRepository->getDoctorsNearYouPaginated($perPage);
+        return $this->homeRepository->getDoctorsNearYouPaginated($perPage, $lat, $lng);
     }
 
     public function getDoctorDetails(int $id): array
