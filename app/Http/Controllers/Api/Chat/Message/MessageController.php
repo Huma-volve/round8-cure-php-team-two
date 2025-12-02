@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Chat\Message;
 
+use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\SendMessageRequest;
 
@@ -15,6 +16,7 @@ class MessageController extends Controller
             $auth = auth()->user();
             $chat = $auth->chats()->find($request->chat_id);
 
+            $this->authorize('sendMessage', $chat);  // check permission by policy
             $message = $chat->messages()->create([
                 'type' => $request->type,
                 'sender_id' => $auth->id,
@@ -30,6 +32,8 @@ class MessageController extends Controller
             ]);
 
             DB::commit();
+            broadcast(new SendMessageEvent($message));
+            return apiResponse(200, 'message sent successfully', $message);
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -48,6 +52,7 @@ class MessageController extends Controller
         }
 
         $chat = $auth->chats()->find($id);
+        $this->authorize('view', $chat);  // check permission by policy
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }
@@ -77,6 +82,7 @@ class MessageController extends Controller
             return apiResponse(200, 'All messages are already read');
         }
 
+        $this->authorize('markSeen', $chat);  // check permission by policy
         $chat->messages()->where('seen', 0)->update(
             ['seen' => 1]
         );

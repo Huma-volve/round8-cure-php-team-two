@@ -17,7 +17,9 @@ class SearchController extends Controller
         $chat = $auth->chats()->with('doctor')
             ->where(function ($query) use ($keyword) {
                 $query->whereHas('doctor', fn($q) => $q->where('name', 'like', '%' . $keyword . '%'))
-                    ->orWhereHas('messages', fn($q) => $q->where('content', 'like', '%' . $keyword . '%'));
+                    ->orWhereHas('messages', fn($q) =>
+                    $q->where('type','text')
+                    ->where('content', 'like', '%' . $keyword . '%'));
             })->get();
 
         if (!$chat) {

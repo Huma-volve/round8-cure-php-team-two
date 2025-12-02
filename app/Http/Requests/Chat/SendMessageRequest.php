@@ -23,11 +23,24 @@ class SendMessageRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $data = [
             'chat_id' => ['required' , 'exists:chats,id'],
             'type' => ['required' , new Enum(MessageType::class)],
-            'content' => ['nullable' , 'string','max:255'],
-            'file' => ['nullable' , 'file' , 'max:2048'],
         ];
+
+        if('type' === MessageType::TEXT){
+            $data['content'] = ['required' , 'string','max:255'];
+        }
+
+        if('type' === MessageType::IMAGE){
+            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:jpg,jpeg,png'];
+        }
+        if ('type' === MessageType::VIDEO){
+            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:mp4'];
+        }
+        if('type' === MessageType::AUDIO){
+            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:mp3'];
+        }
+        return $data;
     }
 }

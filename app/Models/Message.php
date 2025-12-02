@@ -16,9 +16,7 @@ class Message extends Model
         'seen',
     ];
 
-    protected $casts = [
-        'type' => MessageType::class,
-    ];
+
 
     public function chat()
     {
