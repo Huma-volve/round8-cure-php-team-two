@@ -20,7 +20,7 @@ class SpecialtiesController extends Controller
 
         return response()->json([
             "status" => true,
-            "message" => "Home data loaded",
+            "message" => "Specialties loaded successfully",
             "data" => [
                 "specialties" => $this->homeSrvice->getPaginatedSpecialties($perPage),
             ]
