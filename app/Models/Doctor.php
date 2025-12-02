@@ -35,7 +35,13 @@ class Doctor extends Model
         'location' => 'json',
     ];
 
-    public function specialty(){
+    public function specialty()
+    {
         return $this->belongsTo(Specialty::class, 'specialty_id');
     }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
 }
