@@ -31,14 +31,17 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-      "file": [
+      "files": [
             "app/Helper/apiResponse.php"
       ]
     },
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        }
+        },
+      "files": [
+        "app/Helper/apiResponse.php"
+      ]
     },
     "scripts": {
         "setup": [
