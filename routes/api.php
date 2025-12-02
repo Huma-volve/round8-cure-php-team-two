@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Chat\Favorite\FavoriteController;
 use App\Http\Controllers\Api\Chat\Message\MessageController;
 use App\Http\Controllers\Api\Chat\Room\ChatController;
 use Illuminate\Http\Request;
@@ -27,10 +28,16 @@ Route::prefix('v1')->group(function () {
             Route::post('/','sendMessage');
             Route::get('chats/{id}/messages','getChatMessages');
             Route::patch('chats/{id}/messages-read-all','makeAllMessagesAsRead');
+            Route::delete('chats/{id}/messages','deleteAllMessages');
+            Route::delete('chat/{chatId}/message/{messageId}','deleteMessage');
         });
         //============================== End Messages =================================//
         //============================== Favorite Chats =================================//
-
+        Route::prefix('favorites')->controller(FavoriteController::class)->group(function () {
+            Route::get('/add/{chatId}','addToFavorite');
+            Route::get('/remove/{chatId}','removeFromFavorite');
+            Route::get('/chats','getFavoriteChats');
+        });
         //============================== End Favorite Chats =================================//
 
     });

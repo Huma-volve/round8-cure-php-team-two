@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Chat\Message;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\SendMessageRequest;
-use App\Models\Chat;
 
 class MessageController extends Controller
 {
@@ -48,13 +47,9 @@ class MessageController extends Controller
             return apiResponse(401, 'unauthorized');
         }
 
-        $chat = Chat::find($id);
+        $chat = $auth->chats()->find($id);
         if (!$chat) {
             return apiResponse(404, 'chat not found');
-        }
-
-        if ($chat->user_id != $auth->id) {
-            return apiResponse(401, 'unauthorized');
         }
 
         $messages = $chat->messages()->with('sender')->paginate($perPage);
@@ -73,13 +68,9 @@ class MessageController extends Controller
             return apiResponse(401, 'unauthorized');
         }
 
-        $chat = Chat::find($id);
+        $chat = $auth->chats()->find($id);
         if (!$chat) {
             return apiResponse(404, 'chat not found');
-        }
-
-        if ($chat->user_id != $auth->id) {
-            return apiResponse(401, 'unauthorized');
         }
 
         if ($chat->messages()->count() == 0) {
@@ -91,5 +82,37 @@ class MessageController extends Controller
         );
         return apiResponse(200, 'All messages are read');
 
+    }
+
+    public function deleteAllMessages($id)
+    {
+        $auth = auth()->user();
+        if (!$auth) {
+            return apiResponse(401, 'unauthorized');
+        }
+
+        $chat = $auth->chats()->find($id);
+        if (!$chat) {
+            return apiResponse(404, 'chat not found');
+        }
+
+        $chat->messages()->delete();
+        return apiResponse(200, 'All messages are deleted');
+    }
+
+    public function deleteMessage($chatId, $messageId)
+    {
+        $auth = auth()->user();
+        if (!$auth) {
+            return apiResponse(401, 'unauthorized');
+        }
+
+        $chat = $auth->chats()->find($id);
+        if (!$chat) {
+            return apiResponse(404, 'chat not found');
+        }
+
+        $chat->messages()->where('id', $messageId)->delete();
+        return apiResponse(200, 'Message deleted');
     }
 }

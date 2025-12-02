@@ -16,7 +16,7 @@ class ChatController extends Controller
         }
 
         $chats = $auth->chats()
-            ->with(['doctor','messages' => function ($query) {
+            ->with(['doctor', 'messages' => function ($query) {
                 $query->latest()->take(1);
             }])->get();
 
@@ -60,18 +60,16 @@ class ChatController extends Controller
         if (!$auth) {
             return apiResponse(401, 'unauthorized');
         }
-        $chat = Chat::find($id);
+
+        $chat = $auth->chats()->find($id);
+
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }
 
-        if($chat->user_id != $auth->id){
-            return apiResponse(401, 'unauthorized');
-        }
+        $message = $chat->load('messages.sender');
 
-        $message =  $chat->load('messages.sender');
-
-        if($message->messages->count() == 0){
+        if ($message->messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
         return apiResponse(200, 'success', $message);
