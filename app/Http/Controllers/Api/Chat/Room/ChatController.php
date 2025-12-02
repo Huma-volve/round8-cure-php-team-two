@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function FetchUserChats()
+    public function fetchUserChats()
     {
         $auth = auth()->user();
         if (!$auth) {
@@ -32,7 +32,7 @@ class ChatController extends Controller
 
     }
 
-    public function CreateOrFetchChat(Request $request)
+    public function createOrFetchChat(Request $request)
     {
         $request->validate([
             'doctor_id' => ['required', 'exists:doctors,id']
@@ -54,7 +54,7 @@ class ChatController extends Controller
         return apiResponse(200, 'success', $chat);
     }
 
-    public function FetchChatMessages($id)
+    public function fetchChatMessages($id)
     {
         $auth = auth()->user();
         if (!$auth) {
@@ -68,11 +68,13 @@ class ChatController extends Controller
         if($chat->user_id != $auth->id){
             return apiResponse(401, 'unauthorized');
         }
+
         $message =  $chat->load('messages.sender');
+
         if($message->messages->count() == 0){
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success', $chat);
+        return apiResponse(200, 'success', $message);
     }
 
 }
