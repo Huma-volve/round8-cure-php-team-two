@@ -7,23 +7,21 @@ use App\Modules\Home\Services\HomeService;
 
 class SpecialtiesController extends Controller
 {
-    protected $homeSrvice;
+    protected $homeService;
 
-    public function __construct(HomeService $homeSrvice)
+    public function __construct(HomeService $homeService)
     {
-        $this->homeSrvice = $homeSrvice;
+        $this->homeService = $homeService;
     }
 
     public function index()
     {
-        $perPage = request()->get('per_page', 10);
-
-        return response()->json([
-            "status" => true,
-            "message" => "Specialties loaded successfully",
-            "data" => [
-                "specialties" => $this->homeSrvice->getPaginatedSpecialties($perPage),
+        return apiResponse(
+            true,
+            "Specialties loaded successfully",
+            [
+                "specialties" => $this->homeService->getPaginatedSpecialties(),
             ]
-        ]);
+        );
     }
 }

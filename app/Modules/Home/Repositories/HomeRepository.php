@@ -8,10 +8,11 @@ use App\Models\Specialty;
 class HomeRepository
 {
 
-    public function getAllPaginated(int $perPage = 10)
+    public function getAll()
     {
-        return Specialty::select('id', 'name', 'icon')->paginate($perPage);
+        return Specialty::select('id', 'name', 'icon')->get();
     }
+
     public function getDoctorsNearYouPaginated($perPage = 5, $lat = null, $lng = null)
     {
         $query = Doctor::with(['specialty', 'times', 'reviews'])
@@ -25,24 +26,13 @@ class HomeRepository
                 sin(radians(?)) * sin(radians(JSON_EXTRACT(location, '$.lat')))
             )) AS distance
         ", [$lat, $lng, $lat])
-                ->having('distance', '<=', 10) // مثلاً ضمن 10 كم
+                ->having('distance', '<=', 10)
                 ->orderBy('distance');
         }
 
-        return $query->paginate($perPage)->through(function ($doctor) {
-            return [
-                'id' => $doctor->id,
-                'name' => $doctor->name,
-                'image' => $doctor->image,
-                'hospital_name' => $doctor->hospital_name,
-                'specialty_id' => $doctor->specialty_id,
-                'specialty' => $doctor->specialty,
-                'location' => $doctor->location,
-                'times' => $doctor->times,
-                'rating' => round($doctor->average_rating ?? 0, 1),
-            ];
-        });
+        return $query->paginate($perPage);
     }
+
 
     //doctor details
     public function findByIdWithRelations(int $id): Doctor

@@ -3,6 +3,7 @@
 namespace App\Modules\Home\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Modules\Home\Resources\DoctorDetailsResource;
 use App\Modules\Home\Services\HomeService;
 
 class DoctorDetailsController extends Controller
@@ -16,11 +17,12 @@ class DoctorDetailsController extends Controller
 
     public function show($id)
     {
-        $doctorData = $this->homeService->getDoctorDetails($id);
+        $doctor = $this->homeService->getDoctorDetails($id);
 
-        return response()->json([
-            'status' => true,
-            'data' => $doctorData
-        ]);
+        return apiResponse(
+            true,
+            'Doctor details loaded successfully',
+            new DoctorDetailsResource($doctor)
+        );
     }
 }
