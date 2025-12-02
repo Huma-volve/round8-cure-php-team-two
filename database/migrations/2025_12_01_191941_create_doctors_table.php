@@ -17,16 +17,17 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('image')->nullable();
+            $table->enum('gender', ['male', 'female']);
             $table->longText('bio')->nullable();
             $table->string('phone')->unique();
             $table->integer('price');
             $table->string('hospital_name');
-            $table->json('loction')->nullable();
+            $table->json('location')->nullable();
             $table->integer('exp_years');
             $table->boolean('status')->default(true);
             $table->timestamp('email_verified_at')->nullable();
-
             $table->foreignId('specialty_id')->constrained('specialties')->onDelete('cascade');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

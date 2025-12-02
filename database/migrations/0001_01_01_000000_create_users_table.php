@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('provider_id')->nullable();
             $table->json('location');
             $table->boolean('status')->default(true);
-            $table->timestamp('bir_of_date');
+            $table->enum('gender', ['male', 'female']);
+            $table->date('bir_of_date');
             $table->rememberToken();
             $table->timestamps();
         });
