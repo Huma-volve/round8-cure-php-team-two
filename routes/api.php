@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Chat\Favorite\FavoriteController;
 use App\Http\Controllers\Api\Chat\Message\MessageController;
 use App\Http\Controllers\Api\Chat\Room\ChatController;
+use App\Http\Controllers\Api\Chat\Search\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,12 @@ Route::prefix('v1')->group(function () {
             Route::get('/chats','getFavoriteChats');
         });
         //============================== End Favorite Chats =================================//
+        //============================== Search Chats =================================//
+        Route::prefix('search')->controller(SearchController::class)->group(function () {
+            Route::get('/',  'searchChats');
+        });
+        //============================== End Search Chats =================================//
+
 
     });
 
