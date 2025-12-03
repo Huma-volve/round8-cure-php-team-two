@@ -61,4 +61,10 @@ class User extends Authenticatable
         return $this->belongsToMany(Doctor::class, 'favorites');
     }
 
+    public function searchHistories()
+    {
+        return $this->hasMany(Search::class);
+    }
+
+
 }
