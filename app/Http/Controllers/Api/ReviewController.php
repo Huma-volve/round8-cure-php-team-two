@@ -1,25 +1,21 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use app\Helper\apiResponse;
+use app\Helpers\apiResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Review\StoreReviewRequest;
+use App\Http\Requests\Review\UpdateReviewRequest;
+use App\Http\Resources\ReviewResource;
 use App\Models\Appointment;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Ramsey\Collection\Collection;
 
 class ReviewController extends Controller
 {
-    public function store(Request $request)
+    public function store(StoreReviewRequest $request)
     {
-
-        $request->validate([
-            'appointment_id' => 'required|exists:appointments,id',
-            'doctor_id' => 'required|exists:doctors,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string'
-        ]);
-
         $appointment = Appointment::findOrFail($request->appointment_id);
         $appointmentDateTime = Carbon::parse($appointment['appointment_date'] . ' ' . $appointment['appointment_time']);
 
@@ -40,21 +36,16 @@ class ReviewController extends Controller
             'user_id' => 2
         ]);
 
-        return apiResponse(201, "Review added successfully.", $review);
+        return apiResponse(201, "Review added successfully.", new ReviewResource($review));
 
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateReviewRequest $request, $id)
     {
 
         $review = Review::findOrFail($id);
 
-        $request->validate([
-            'appointment_id' => 'required|exists:appointments,id',
-            'doctor_id' => 'required|exists:doctors,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string'
-        ]);
+       
 
 
         $appointment = Appointment::findOrFail($request->appointment_id);
@@ -75,7 +66,7 @@ class ReviewController extends Controller
             'user_id' => 2
         ]);
 
-        return apiResponse(200, "Review updated successfully.", $review);
+        return apiResponse(200, "Review updated successfully.", new ReviewResource($review));
     }
 
     public function get_review($id)
@@ -86,7 +77,7 @@ class ReviewController extends Controller
             return apiResponse(404, 'Review not found', );
         }
 
-        return apiResponse($review, 'Review retrieved successfully');
+        return apiResponse(200, 'Review retrieved successfully',new ReviewResource($review));
     }
     public function destroy_review($id)
     {
@@ -116,7 +107,7 @@ class ReviewController extends Controller
             return apiResponse(404, 'No reviews found for this doctor');
         }
 
-        return apiResponse(200, 'Reviews retrieved successfully', $reviews);
+        return apiResponse(200, 'Reviews retrieved successfully', ReviewResource::Collection($reviews));
 
     }
 
