@@ -24,21 +24,44 @@ class Doctor extends Model
         'exp_years',
         'specialty_id',
         'bio',
-
     ];
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'location' => 'json',
+        'status' => 'boolean',
     ];
 
     public function specialty()
     {
         return $this->belongsTo(Specialty::class, 'specialty_id');
+    }
+
+    public function times()
+    {
+        return $this->hasMany(DoctorTime::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    // average rating attribute
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
     }
 
     public function chats()
@@ -49,5 +72,15 @@ class Doctor extends Model
     public function messages()
     {
         return $this->morphMany(Message::class, 'sender');
+    }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+
+    public function isFavoritedBy(User $user)
+    {
+        return $this->favoritedByUsers()->where('user_id', $user->id)->exists();
     }
 }

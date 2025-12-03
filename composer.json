@@ -31,8 +31,8 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-      "file": [
-            "app/Helper/apiResponse.php"
+      "files": [
+          "app/Helpers/apiResponse.php"
       ]
     },
     "autoload-dev": {
