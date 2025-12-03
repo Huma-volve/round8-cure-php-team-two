@@ -19,7 +19,7 @@ class RateLimter
         $remaining = RateLimiter::remaining($request, $max);
 
         return apiResponse(401 , 'Too Many Attempts.',['remaining' => $remaining]);
-
+        
     }
 
 }
