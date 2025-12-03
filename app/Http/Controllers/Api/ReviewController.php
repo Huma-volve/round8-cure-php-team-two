@@ -42,29 +42,12 @@ class ReviewController extends Controller
 
     public function update(UpdateReviewRequest $request, $id)
     {
+       
 
         $review = Review::findOrFail($id);
 
-       
-
-
-        $appointment = Appointment::findOrFail($request->appointment_id);
-        $appointmentDateTime = Carbon::parse($appointment['appointment_date'] . ' ' . $appointment['appointment_time']);
-
-
-        if (!$appointmentDateTime->isPast()) {
-            return apiResponse(400, "The Appointment is still upcoming.");
-        }
-
-
     
-        $review->update([
-            'appointment_id' => $request->appointment_id,
-            'doctor_id' => $request->doctor_id,
-            'rating' => $request->rating,
-            'comment' => $request->comment,
-            'user_id' => 2
-        ]);
+        $review->update($request->all());
 
         return apiResponse(200, "Review updated successfully.", new ReviewResource($review));
     }

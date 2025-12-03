@@ -22,10 +22,10 @@ class UpdateReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appointment_id' => 'required|exists:appointments,id',
-            'doctor_id' => 'required|exists:doctors,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string'
+            'appointment_id' => 'sometimes|exists:appointments,id',
+            'doctor_id' => 'sometimes|exists:doctors,id',
+            'rating' => 'sometimes|integer|min:1|max:5',
+            'comment' => 'sometimes|string'
         ];
     }
 }
