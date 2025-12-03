@@ -1,4 +1,6 @@
 {
+ 
+
     "$schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
@@ -32,7 +34,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
       "files": [
-          "app/Helpers/apiResponse.php"
+            "app/Helper/apiResponse.php"
       ]
     },
     "autoload-dev": {

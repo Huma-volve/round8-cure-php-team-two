@@ -48,6 +48,7 @@ class Doctor extends Model
         return $this->hasMany(DoctorTime::class);
     }
 
+
     public function reviews()
     {
         return $this->hasMany(Review::class);
@@ -83,4 +84,5 @@ class Doctor extends Model
     {
         return $this->favoritedByUsers()->where('user_id', $user->id)->exists();
     }
+
 }
