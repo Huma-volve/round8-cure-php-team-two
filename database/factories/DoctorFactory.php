@@ -2,16 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\Doctor;
 use App\Models\Specialty;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Doctor>
  */
 class DoctorFactory extends Factory
 {
+    protected $model = Doctor::class;
+
     /**
      * Define the model's default state.
      *
@@ -19,25 +21,24 @@ class DoctorFactory extends Factory
      */
     public function definition(): array
     {
-
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' =>  Hash::make('password'),
-            'phone' => fake()->phoneNumber(),
-            'image' => fake()->imageUrl(),
+            'password' => Hash::make('password'),
+            'phone' => $this->faker->phoneNumber(),
+            'image' => $this->faker->imageUrl(640, 480, 'people'),
             'status' => true,
             'location' => [
-                'lat' => fake()->latitude(),
-                'lng' => fake()->longitude(),
+                'lat' => $this->faker->latitude(),
+                'lng' => $this->faker->longitude(),
             ],
-            'gender' => fake()->randomElement(['male', 'female']),
-            'specialty_id' => fake()->randomElement(Specialty::all()),
-            'bio' => fake()->text(),
-            'price' => fake()->numberBetween(100, 1000),
-            'hospital_name' => fake()->company(),
-            'exp_years' => fake()->numberBetween(1, 10),
+            'gender' => $this->faker->randomElement(['male', 'female']),
+            'specialty_id' => Specialty::inRandomOrder()->first()->id ?? null,
+            'bio' => $this->faker->text(),
+            'price' => $this->faker->numberBetween(100, 1000),
+            'hospital_name' => $this->faker->company(),
+            'exp_years' => $this->faker->numberBetween(1, 10),
         ];
     }
 }

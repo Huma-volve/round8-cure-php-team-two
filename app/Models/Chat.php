@@ -6,5 +6,30 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    //
+    protected $table = 'chats';
+    protected $fillable = [
+        'user_id',
+        'doctor_id',
+        'last_message_at',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class, 'doctor_id');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'chat_id');
+    }
+
+    public function favoriteChats()
+    {
+        return $this->hasMany(FavoriteChat::class, 'chat_id');
+    }
 }

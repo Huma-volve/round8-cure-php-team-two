@@ -2,13 +2,16 @@
 
 namespace App\Providers;
 
+use App\Models\Chat;
+use App\Policies\Chats\ChatPolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+    protected $policies = [
+        Chat::class => ChatPolicy::class,
+    ];
+
     public function register(): void
     {
         //
