@@ -73,4 +73,14 @@ class Doctor extends Model
     {
         return $this->morphMany(Message::class, 'sender');
     }
+
+    public function favoritedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
+
+    public function isFavoritedBy(User $user)
+    {
+        return $this->favoritedByUsers()->where('user_id', $user->id)->exists();
+    }
 }
