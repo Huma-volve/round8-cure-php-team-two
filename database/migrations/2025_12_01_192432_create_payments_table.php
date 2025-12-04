@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('payment_method');
+            $table->string('payment_method')->nullable();
             $table->string('price');
             $table->string('status')->default('pending');
             $table->json('payment_details')->nullable();
+            $table->string('stripe_payment_intent_id')->nullable();
             $table->timestamps();
         });
     }
