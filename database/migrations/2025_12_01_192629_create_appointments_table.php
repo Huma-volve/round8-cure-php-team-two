@@ -16,10 +16,10 @@ return new class extends Migration
             $table->date('appointment_date');
             $table->time('appointment_time');
             $table->string('price');
-            $table->string('status')->default('pending');
+            $table->string('status')->default('pending_payment');
             $table->foreignId('doctor_id')->constrained('doctors')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('payment_id')->constrained('payments')->onDelete('cascade');
+            $table->foreignId('payment_id')->nullable()->constrained('payments')->nullOnDelete();
             $table->timestamps();
         });
     }

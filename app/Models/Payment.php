@@ -9,6 +9,11 @@ class Payment extends Model
     protected $fillable = [
         'price',
         'status',
-        'payment_details'
+        'payment_details',
+        'stripe_payment_intent_id'
+    ];
+
+    protected $casts = [
+        'payment_details' => 'array',
     ];
 }

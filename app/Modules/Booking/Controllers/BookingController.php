@@ -19,8 +19,9 @@ class BookingController extends Controller
         // For testing only: assign a user_id manually
         $data = $request->validated();
         $data['user_id'] = 1; // Replace with an existing user ID in your DB
-        $appointment = $this->service->book($data);
+        $data['status'] = 'pending_payment';
 
+        $appointment = $this->service->book($data);
         return apiResponse(
             true,
             'Appointment booked successfully',
