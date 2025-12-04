@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class FavoriteChat extends Model
+class
+FavoriteChat extends Model
 {
     protected $table = 'favorite_chats';
     protected $fillable = [
