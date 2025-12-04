@@ -6,4 +6,5 @@ return [
     App\Modules\Home\Providers\HomeServiceProvider::class,
     App\Modules\Favorites\Providers\FavoriteServiceProvider::class,
     App\Modules\Search\Providers\SearchServiceProvider::class,
+    App\Modules\Stripe\Providers\StripeServiceProvider::class,
 ];
