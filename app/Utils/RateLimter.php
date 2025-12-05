@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\RateLimiter;
 
 class RateLimter
 {
-    protected static function checkRateLimit($request, $max)
+    public static function checkRateLimit($request, $max)
     {
 
         if(RateLimiter::tooManyAttempts($request, $max))

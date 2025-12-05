@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class ImageManagement
 {
   // ========== when using this class send $request->image  not $request ===================//
-    protected static function uploadImage($request,  $message = null ,$user = null, $doctor = null )
+    public static function uploadImage($request,  $message = null ,$user = null, $doctor = null )
     {
 
         if ($user && $request->hasFile('image')):
