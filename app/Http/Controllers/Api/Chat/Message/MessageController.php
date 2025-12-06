@@ -57,7 +57,7 @@ class MessageController extends Controller
             return apiResponse(404, 'chat not found');
         }
 
-        $messages = $chat->messages()->with('sender')->paginate($perPage);
+        $messages = $chat->messages()->with('sender')->latest()->paginate($perPage);
 
         if ($messages->count() == 0) {
             return apiResponse(200, 'no messages yet');

@@ -24,12 +24,11 @@ class ChatController extends Controller
             return apiResponse(404, 'chats not found');
         }
 
-        if ($chats->count() == 0) {
-            return apiResponse(200, 'no chats yet');
+        if ($chats->isEmpty()) {
+            return apiResponse(204, 'no chats yet');
         }
 
         return apiResponse(200, 'success', $chats);
-
     }
 
     public function createOrFetchChat(Request $request)
@@ -74,5 +73,4 @@ class ChatController extends Controller
         }
         return apiResponse(200, 'success', $message);
     }
-
 }

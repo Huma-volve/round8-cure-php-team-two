@@ -25,13 +25,11 @@ class FavoriteController extends Controller
             return apiResponse(401, 'unauthorized');
         }
 
-        $chat = Chat::find($id);
+        $chat = $auth->chats()->find($id);
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }
-        if ($chat->user_id != $auth->id) {
-            return apiResponse(401, 'unauthorized');
-        }
+
         $auth->favoriteChats()->syncWithoutDetaching($id);
         return apiResponse(200, 'Chat added to favorites');
     }
@@ -49,6 +47,6 @@ class FavoriteController extends Controller
         }
 
         $auth->favoriteChats()->detach($id);
-        return apiResponse(200, 'Chat added to favorites');
+        return apiResponse(200, 'Chat remove from favorites');
     }
 }
