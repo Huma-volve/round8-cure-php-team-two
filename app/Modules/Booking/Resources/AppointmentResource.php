@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppointmentResource extends JsonResource
 {
-    public function toArray($request)
+    public function toArray($request): array
     {
         return [
             'id'               => $this->id,
@@ -16,9 +16,11 @@ class AppointmentResource extends JsonResource
             'appointment_time' => $this->appointment_time,
             'payment_id'       => $this->payment_id,
             'price'            => $this->price,
-            'status'           => $this->status,
+            'status'           => $this->status->value ?? $this->status, // يدعم enum
             'created_at'       => $this->created_at,
             'updated_at'       => $this->updated_at,
+            'doctor'           => $this->whenLoaded('doctor'), // لو تم eager load
+            'patient'          => $this->whenLoaded('patient'), // لو تم eager load
         ];
     }
 }

@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->json('payment_details')->nullable();
             $table->string('stripe_payment_intent_id')->nullable();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('appointment_id')->constrained('appointments')->onDelete('cascade');
             $table->timestamps();
         });
     }

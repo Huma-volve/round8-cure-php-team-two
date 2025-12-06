@@ -13,21 +13,13 @@ class BookingController extends Controller
 
     public function book(BookAppointmentRequest $request)
     {
-        //$appointment = $this->service->book($request->validated());
+        $appointment = $this->service->book($request->validated());
 
-
-        // For testing only: assign a user_id manually
-        $data = $request->validated();
-        $data['user_id'] = 1; // Replace with an existing user ID in your DB
-        $data['status'] = 'pending_payment';
-
-        $appointment = $this->service->book($data);
         return apiResponse(
             true,
             'Appointment booked successfully',
-            new AppointmentResource($appointment),
+            new AppointmentResource($appointment->load(['doctor', 'patient'])),
             201
         );
     }
-
 }
