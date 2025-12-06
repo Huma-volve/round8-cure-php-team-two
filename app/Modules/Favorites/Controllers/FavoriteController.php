@@ -17,8 +17,7 @@ class FavoriteController extends Controller
 
     public function index(Request $request)
     {
-        //$user = $request->user();
-        $user = $request->user() ?? \App\Models\User::first(); // temporary testing because there is no auth
+        $user = $request->user();
 
         $favorites = $this->favoriteService->list($user);
 
@@ -31,8 +30,7 @@ class FavoriteController extends Controller
 
     public function toggle(ToggleFavoriteRequest $request, Doctor $doctor)
     {
-        //$user = $request->user();
-        $user = $request->user() ?? \App\Models\User::first(); // temporary testing because there is no auth
+        $user = $request->user();
 
         $result = $this->favoriteService->toggle($user, $doctor);
 
