@@ -14,15 +14,9 @@ return new class extends Migration
             $table->date('appointment_date');
             $table->time('appointment_time');
             $table->string('price');
-            $table->enum('status', [
-                AppointmentStatus::PendingPayment->value,
-                AppointmentStatus::Paid->value,
-                AppointmentStatus::Cancelled->value,
-                AppointmentStatus::Completed->value,
-            ])->default(AppointmentStatus::PendingPayment->value);
+            $table->string('status')->default(AppointmentStatus::PendingPayment->value);
             $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->unsignedBigInteger('payment_id')->nullable();
             $table->timestamps();
         });
     }
