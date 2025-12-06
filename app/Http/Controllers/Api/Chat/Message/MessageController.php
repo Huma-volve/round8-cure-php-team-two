@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\SendMessageRequest;
 use App\Http\Resources\Chat\Message\MessageCollection;
 use App\Http\Resources\Chat\Message\MessageResource;
+
 use App\Models\Message;
 use App\Utils\ImageManagement;
+use App\Utils\RateLimter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +18,7 @@ class MessageController extends Controller
 {
     public function sendMessage(SendMessageRequest $request)
     {
+        $remaining = RateLimter::checkRateLimit($request, 10);
 
         try {
             DB::beginTransaction();
@@ -29,6 +32,7 @@ class MessageController extends Controller
             $message = $auth->messages()->create([
                 'chat_id' => $chat->id,
                 'type' => $request->type,
+                'content' => $request->type === "text" ? $request->content : null,
             ]);
             if ($request->hasFile('content')) {
                 ImageManagement::uploadImage($request, $message);
@@ -44,7 +48,7 @@ class MessageController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            return apiResponse(500, 'server error');
+            return apiResponse(500, 'server error',$remaining);
         }
 
     }
@@ -68,7 +72,7 @@ class MessageController extends Controller
         if ($messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success',MessagesCollection::make($messages)->response()->getData(true));
+        return apiResponse(200, 'success',new MessageCollection($messages)->response()->getData(true));
 
     }
 

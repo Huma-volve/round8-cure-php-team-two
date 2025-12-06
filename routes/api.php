@@ -63,7 +63,7 @@ Route::prefix('v1')->group(function () {
         //============================== Favorite Chats =================================//
         Route::prefix('favorites')->controller(FavoriteController::class)->group(function () {
             Route::get('/add/{chatId}', 'addToFavorite');
-            Route::get('/remove/{chatId}', 'removeFromFavorite');
+            Route::delete('/remove/{chatId}', 'removeFromFavorite');
             Route::get('/chats', 'getFavoriteChats');
         });
         //============================== End Favorite Chats =================================//

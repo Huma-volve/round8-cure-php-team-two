@@ -20,8 +20,8 @@ class ImageManagement
         endif;
 
         if ($message && $request->hasFile('content')):
-            self::saveMessageType($request->content, $message);
-            self::deleteImage($request->content);
+            self::saveMessageType($request, $message);
+//            self::deleteImage($request->content);
         endif;
 
         if ($request->hasFile('image')):
@@ -60,13 +60,13 @@ class ImageManagement
         ]);
     }
 
-    protected static function saveMessageType($file, $message, $defaultPath = 'chats')
+    protected static function saveMessageType($request, $message, $defaultPath = 'chats')
     {
         $path = match ($message->type) {
-            'image' => self::generateImageName($file, "$defaultPath/images"),
-            'voice' => self::generateImageName($file, "$defaultPath/voices"),
-            'video' => self::generateImageName($file, "$defaultPath/videos"),
-            'text' => $file->content,
+            'image' => self::generateImageName($request->content, "$defaultPath/images"),
+            'voice' => self::generateImageName($request->content, "$defaultPath/voices"),
+            'video' => self::generateImageName($request->content, "$defaultPath/videos"),
+            'text' =>$request->content,
         };
         $message->update([
             'content' => $path

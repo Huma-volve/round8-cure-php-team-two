@@ -12,6 +12,10 @@ class Chat extends Model
         'doctor_id',
         'last_message_at',
     ];
+    protected $casts = [
+        'last_message_at' => 'datetime',
+    ];
+
 
     public function user()
     {

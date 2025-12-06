@@ -68,11 +68,11 @@ class ChatController extends Controller
             return apiResponse(404, 'chat not found');
         }
 
-        $message = $chat->load('messages.sender');
+        $message = $chat->load('messages');
 
         if ($message->messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success', new MessageCollection($message));
+        return apiResponse(200, 'success', RoomResource::make($message));
     }
 }
