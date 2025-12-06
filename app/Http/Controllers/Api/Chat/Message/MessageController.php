@@ -5,6 +5,12 @@ namespace App\Http\Controllers\Api\Chat\Message;
 use App\Events\SendMessageEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\SendMessageRequest;
+use App\Http\Resources\Chat\Message\MessageCollection;
+use App\Http\Resources\Chat\Message\MessageResource;
+use App\Models\Message;
+use App\Utils\ImageManagement;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -16,15 +22,16 @@ class MessageController extends Controller
             $auth = auth()->user();
             $chat = $auth->chats()->find($request->chat_id);
 
-            $this->authorize('sendMessage', $chat);  // check permission by policy
-            $message = $chat->messages()->create([
+            if(!$chat)
+            {
+                return apiResponse(404, 'chat not found');
+            }
+            $message = $auth->messages()->create([
+                'chat_id' => $chat->id,
                 'type' => $request->type,
-                'sender_id' => $auth->id,
-                'sender_type' => get_class($auth)
             ]);
-
-            if ($request->hasFile('file')) {
-                ImageManagement::saveMessageType($request->file, $message);
+            if ($request->hasFile('content')) {
+                ImageManagement::uploadImage($request, $message);
             }
 
             $chat->update([
@@ -33,7 +40,7 @@ class MessageController extends Controller
 
             DB::commit();
             broadcast(new SendMessageEvent($message));
-            return apiResponse(200, 'message sent successfully', $message);
+            return apiResponse(200, 'message sent successfully', Messageresource::make($message));
 
         } catch (Exception $e) {
             DB::rollBack();
@@ -52,7 +59,6 @@ class MessageController extends Controller
         }
 
         $chat = $auth->chats()->find($id);
-        $this->authorize('view', $chat);  // check permission by policy
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }
@@ -62,7 +68,7 @@ class MessageController extends Controller
         if ($messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success', $messages);
+        return apiResponse(200, 'success',MessagesCollection::make($messages)->response()->getData(true));
 
     }
 
@@ -82,7 +88,6 @@ class MessageController extends Controller
             return apiResponse(200, 'All messages are already read');
         }
 
-        $this->authorize('markSeen', $chat);  // check permission by policy
         $chat->messages()->where('seen', 0)->update(
             ['seen' => 1]
         );
@@ -113,7 +118,7 @@ class MessageController extends Controller
             return apiResponse(401, 'unauthorized');
         }
 
-        $chat = $auth->chats()->find($id);
+        $chat = $auth->chats()->find($chatId);
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }

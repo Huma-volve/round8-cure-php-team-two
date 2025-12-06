@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\Chat\Room;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Chat\Message\MessageCollection;
+use App\Http\Resources\Chat\Room\RoomCollection;
+use App\Http\Resources\Chat\Room\RoomResource;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 
@@ -28,7 +31,7 @@ class ChatController extends Controller
             return apiResponse(204, 'no chats yet');
         }
 
-        return apiResponse(200, 'success', $chats);
+        return apiResponse(200, 'success', new RoomCollection($chats));
     }
 
     public function createOrFetchChat(Request $request)
@@ -36,7 +39,6 @@ class ChatController extends Controller
         $request->validate([
             'doctor_id' => ['required', 'exists:doctors,id']
         ]);
-
         $auth = auth()->user();
         if (!$auth) {
             return apiResponse(401, 'unauthorized');
@@ -50,7 +52,7 @@ class ChatController extends Controller
         if (!$chat) {
             return apiResponse(404, 'chat not found');
         }
-        return apiResponse(200, 'success', $chat);
+        return apiResponse(200, 'success', RoomResource::make($chat));
     }
 
     public function fetchChatMessages($id)
@@ -71,6 +73,6 @@ class ChatController extends Controller
         if ($message->messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success', $message);
+        return apiResponse(200, 'success', new MessageCollection($message));
     }
 }
