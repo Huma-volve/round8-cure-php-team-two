@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Chat\Search;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Chat\Room\RoomCollection;
 
 class SearchController extends Controller
 {
@@ -22,10 +23,10 @@ class SearchController extends Controller
                     ->where('content', 'like', '%' . $keyword . '%'));
             })->get();
 
-        if (!$chat) {
+        if (!$chat || $chat->isEmpty()) {
             return apiResponse(404, 'chat not found');
         }
-        return apiResponse(200, 'success', $chat);
+        return apiResponse(200, 'success', RoomCollection::make($chat));
 
     }
 }
