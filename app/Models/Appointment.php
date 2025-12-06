@@ -19,6 +19,10 @@ class Appointment extends Model
         'price'
     ];
 
+    protected $casts = [
+        'status' => AppointmentStatus::class,
+    ];
+
     public function review() { return $this->hasOne(Review::class); }
     public function doctor() { return $this->belongsTo(User::class, 'doctor_id'); }
     public function patient() { return $this->belongsTo(User::class, 'user_id'); }

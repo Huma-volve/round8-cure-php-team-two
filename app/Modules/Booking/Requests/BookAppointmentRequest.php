@@ -8,7 +8,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BookAppointmentRequest extends FormRequest
 {
-    public function authorize(): bool { return auth()->check(); }
+    public function authorize(): bool
+    {
+        return auth()->check();
+    }
 
     public function rules(): array
     {
@@ -23,14 +26,12 @@ class BookAppointmentRequest extends FormRequest
                     $date = $this->input('date');
 
                     if ($doctorId && $date) {
-                        // التحقق إذا الوقت محجوز
                         $exists = Appointment::where('doctor_id', $doctorId)
                             ->where('appointment_date', $date)
                             ->where('appointment_time', $value)
                             ->exists();
                         if ($exists) $fail("This time slot is already booked for the doctor.");
 
-                        // التحقق من ساعات عمل الدكتور
                         $available = DoctorTime::where('doctor_id', $doctorId)
                             ->where('date', $date)
                             ->whereTime('start_time', '<=', $value)

@@ -8,33 +8,34 @@ use App\Models\Payment;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
-use Exception;
 use App\Enums\AppointmentStatus;
 
 class StripeController extends Controller
 {
     public function createPaymentIntent(Request $request)
     {
-        try {
-            $request->validate([
-                'amount' => 'required|numeric|min:1',
-                'appointment_id' => 'required|integer|exists:appointments,id'
-            ]);
+        $request->validate([
+            'appointment_id' => 'required|integer|exists:appointments,id',
+        ]);
 
+        try {
             $user = $request->user();
 
             $appointment = Appointment::where('id', $request->appointment_id)->where('user_id', $user->id)->firstOrFail();
 
             Stripe::setApiKey(config('services.stripe.secret_key'));
 
+            // تأكد أن المبلغ أكبر من الحد الأدنى المسموح
+            $amount = max(floatval($appointment->price), 50); // 0.5 USD * 100 cents
+
             $paymentIntent = PaymentIntent::create([
-                'amount' => $request->amount * 100,
+                'amount' => intval($amount * 100), // تحويل الدولار إلى سنت
                 'currency' => 'usd',
-                'automatic_payment_methods' => ['enabled' => true],
+                'automatic_payment_methods' => ['enabled' => true], // Stripe يدير وسائل الدفع تلقائيًا
             ]);
 
             $payment = Payment::create([
-                'price' => $request->amount,
+                'price' => $appointment->price,
                 'status' => 'pending',
                 'user_id' => $user->id,
                 'appointment_id' => $appointment->id,
@@ -54,7 +55,8 @@ class StripeController extends Controller
                     'publishableKey' => config('services.stripe.public_key'),
                 ]
             );
-        } catch (Exception $e) {
+
+        } catch (\Exception $e) {
             return apiResponse(false, $e->getMessage(), null, 500);
         }
     }
@@ -62,44 +64,42 @@ class StripeController extends Controller
     public function confirm(Request $request)
     {
         $request->validate([
-            'payment_intent_id' => 'required',
-            'appointment_id' => 'required|integer|exists:appointments,id'
+            'payment_intent_id' => 'required|string',
+            'appointment_id' => 'required|integer|exists:appointments,id',
         ]);
 
         try {
             $user = $request->user();
 
-            $appointment = Appointment::where('id', $request->appointment_id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            $appointment = Appointment::where('id', $request->appointment_id)->where('user_id', $user->id)->firstOrFail();
 
             Stripe::setApiKey(config('services.stripe.secret_key'));
 
             $intent = PaymentIntent::retrieve($request->payment_intent_id);
 
             if ($intent->status !== 'succeeded') {
-                return apiResponse(false, 'Payment not completed', [
-                    'stripe_status' => $intent->status
-                ], 400);
+                return apiResponse(
+                    false,
+                    'Payment not completed',
+                    ['stripe_status' => $intent->status],
+                    400
+                );
             }
 
-            $payment = Payment::where('stripe_payment_intent_id', $intent->id)
-                ->where('user_id', $user->id)
-                ->firstOrFail();
+            $payment = Payment::where('stripe_payment_intent_id', $intent->id)->where('user_id', $user->id)->firstOrFail();
 
-            // Update payment
-            $payment->update([
-                'status' => 'paid',
-            ]);
+            // تحديث حالة الدفع
+            $payment->update(['status' => 'paid']);
 
-            // Update appointment with enum value
+            // تحديث حالة الموعد
             $appointment->update([
-                'payment_id' => $payment->id,
                 'status' => AppointmentStatus::Paid->value,
+                'payment_id' => $payment->id, // ربط الموعد بالدفع
             ]);
 
             return apiResponse(true, 'Payment confirmed & appointment updated successfully');
-        } catch (Exception $e) {
+
+        } catch (\Exception $e) {
             return apiResponse(false, $e->getMessage(), null, 500);
         }
     }
