@@ -26,15 +26,8 @@ class Appointment extends Model
     public function review() { return $this->hasOne(Review::class); }
     public function doctor() { return $this->belongsTo(User::class, 'doctor_id'); }
     public function patient() { return $this->belongsTo(User::class, 'user_id'); }
-    public function payment() { return $this->belongsTo(Payment::class); }
-
-    public function getStatusAttribute($value): AppointmentStatus
+    public function payment()
     {
-        return AppointmentStatus::from($value);
-    }
-
-    public function setStatusAttribute(AppointmentStatus|string $status): void
-    {
-        $this->attributes['status'] = $status instanceof AppointmentStatus ? $status->value : $status;
+        return $this->hasOne(Payment::class);
     }
 }

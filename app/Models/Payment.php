@@ -19,4 +19,10 @@ class Payment extends Model
     protected $casts = [
         'payment_details' => 'array',
     ];
+
+    public function appointment()
+    {
+        return $this->belongsTo(Appointment::class);
+    }
+
 }

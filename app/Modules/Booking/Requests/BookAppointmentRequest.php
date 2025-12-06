@@ -41,7 +41,6 @@ class BookAppointmentRequest extends FormRequest
                     }
                 }
             ],
-            'payment_id'=> 'nullable|exists:payments,id',
         ];
     }
 

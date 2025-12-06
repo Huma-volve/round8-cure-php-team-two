@@ -18,7 +18,6 @@ class AppointmentService
             'user_id'          => auth()->id(),
             'appointment_date' => $data['date'],
             'appointment_time' => $data['time'],
-            'payment_id'       => $data['payment_id'] ?? null,
             'status'           => $data['status'] ?? AppointmentStatus::PendingPayment->value,
             'price'            => $doctor->price,
         ]);
