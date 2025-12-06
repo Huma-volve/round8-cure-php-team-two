@@ -33,6 +33,12 @@ class DoctorsNearYouController extends Controller
 
     public function doctorsNearYou(Request $request)
     {
+        $request->validate([
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'per_page' => 'sometimes|integer|min:1',
+        ]);
+
         $perPage = $request->input('per_page', 5);
         $lat = $request->input('lat');
         $lng = $request->input('lng');
