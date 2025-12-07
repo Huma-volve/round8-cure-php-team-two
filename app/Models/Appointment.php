@@ -30,4 +30,16 @@ class Appointment extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    // Relationship to patient/user
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Check if appointment is within 24 hours
+    public function isBefore24Hours(): bool
+    {
+        return now()->diffInHours($this->appointment_date . ' ' . $this->appointment_time, false) < 24;
+    }
 }
