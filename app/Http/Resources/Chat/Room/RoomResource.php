@@ -22,7 +22,7 @@ class RoomResource extends JsonResource
             "doctor_id" => $this->doctor_id,
             "doctor" => DoctorResource::make($this->whenLoaded('doctor')),
             "messages" => MessageResource::collection($this->whenLoaded('messages')),
-            'last_message_time' => $this->last_message_at->diffForHumans() ?? 'this is a new chat room with no messages yet.',
+            'last_message_time' => $this->last_message_at ?? 'this is a new chat room with no messages yet.',
 
         ];
 
