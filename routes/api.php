@@ -18,9 +18,10 @@ Route::get('/user', function (Request $request) {
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
+
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('otp/send', [AuthController::class, 'sendOtp']);
+    Route::post('otp/resend', [AuthController::class, 'resendOtp']); 
     Route::post('otp/verify', [AuthController::class, 'verifyOtp']);
 
     //Google OAuth Routes
