@@ -58,7 +58,7 @@ Route::get('/{review}', [ReviewController::class, 'get_review']);
 Route::delete('/delete/{id}', [ReviewController::class, 'destroy_review']);
 Route::put('/{id}/update', [ReviewController::class, 'update']);
 
-Route::get('/{doctor_id}/reviews', [ReviewController::class, 'get_reviews_to_doctor']);
+Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
 });
 
 

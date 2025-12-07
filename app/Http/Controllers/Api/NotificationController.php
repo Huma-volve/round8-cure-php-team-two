@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NotificationResource;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,7 @@ class NotificationController extends Controller
         $user = Auth::user();
         $notifications = $user->notifications()->latest()->get();
 
-        return apiResponse(200, "All Notification", $notifications);
+        return apiResponse(200, "All Notification", NotificationResource::collection($notifications));
     }
 
     /**
@@ -25,7 +26,7 @@ class NotificationController extends Controller
         $unreadNotifications = $user->unreadNotifications()->latest()->get();
 
 
-        return apiResponse(200, "All Unread Notification", $unreadNotifications);
+        return apiResponse(200, "All Unread Notification", NotificationResource::collection($unreadNotifications));
 
     }
 
