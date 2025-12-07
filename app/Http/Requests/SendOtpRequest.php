@@ -22,8 +22,10 @@ class SendOtpRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'phone' => 'required|string',
-            'user_id' => 'required|integer'
+                    
+        'phone'   => 'required|string',
+        'user_id' => 'required|exists:users,id',
+        
         ];
     }
 }

@@ -14,14 +14,12 @@ class SearchController extends Controller
 
     protected function getUser(Request $request)
     {
-        //return $request->user() ?? abort(401, 'User not authenticated');
-        return $request->user() ?? \App\Models\User::first() ?? abort(401, 'User not authenticated');
+        return $request->user() ?? abort(401, 'User not authenticated');
     }
 
     public function search(SearchRequest $request)
     {
-        //$user = $this->getUser($request);
-        $user = $request->user() ?? \App\Models\User::first(); // temporary testing because there is no auth
+        $user = $this->getUser($request);
 
         $keyword = $request->input('content');
         $this->repository->saveSearchHistory($user->id, $keyword);
@@ -36,8 +34,7 @@ class SearchController extends Controller
 
     public function history(Request $request)
     {
-        //$user = $this->getUser($request);
-        $user = $request->user() ?? \App\Models\User::first(); // temporary testing because there is no auth
+        $user = $this->getUser($request);
         $history = $this->repository->getUserHistory($user->id);
 
         return apiResponse(
@@ -49,8 +46,7 @@ class SearchController extends Controller
 
     public function clearHistory(Request $request)
     {
-        //$user = $this->getUser($request);
-        $user = $request->user() ?? \App\Models\User::first(); // temporary testing because there is no auth
+        $user = $this->getUser($request);
         $this->repository->clearUserHistory($user->id);
 
         return apiResponse(
