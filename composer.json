@@ -43,8 +43,8 @@
         "psr-4": {
             "Tests\\": "tests/"
         },
-      "files": [
-        "app/Helper/apiResponse.php"
+      "files" : [
+        "app/Helpers/apiResponse.php"
       ]
     },
     "scripts": {

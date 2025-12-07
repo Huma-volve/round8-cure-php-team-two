@@ -2,27 +2,26 @@
 
 namespace App\Utils;
 
-use App\Enums\MessageType;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
 class ImageManagement
 {
-  // ========== when using this class send $request->image  not $request ===================//
-    public static function uploadImage($request,  $message = null ,$user = null, $doctor = null )
+    // ========== when using this class send $request->image  not $request ===================//
+    public static function uploadImage($request, $message = null, $user = null, $doctor = null)
     {
 
         if ($user && $request->hasFile('image')):
-           self::SaveUserImage($request->image, $user);
+            self::SaveUserImage($request->image, $user);
         endif;
 
-        if($doctor && $request->hasFile('image')):
+        if ($doctor && $request->hasFile('image')):
             self::SaveDoctorImage($request->image, $doctor);
         endif;
 
-        if($meaasge && $request->hasFile('file')):
-            self::saveMessageType($request->file, $message);
-            self::deleteImage($request->file);
+        if ($message && $request->hasFile('content')):
+            self::saveMessageType($request, $message);
+//            self::deleteImage($request->content);
         endif;
 
         if ($request->hasFile('image')):
@@ -61,12 +60,13 @@ class ImageManagement
         ]);
     }
 
-    protected static function saveMessageType ($file, $message , $defauitPath = 'chats')
+    protected static function saveMessageType($request, $message, $defaultPath = 'chats')
     {
-        $path = match($message->type) {
-            MessageType::IMAGE->value => self::generateImageName($file, "$defaultPath/images"),
-            MessageType::VOICE->value => self::generateImageName($file, "$defaultPath/voices"),
-            MessageType::VIDEO->value => self::generateImageName($file, "$defaultPath/videos"),
+        $path = match ($message->type) {
+            'image' => self::generateImageName($request->content, "$defaultPath/images"),
+            'voice' => self::generateImageName($request->content, "$defaultPath/voices"),
+            'video' => self::generateImageName($request->content, "$defaultPath/videos"),
+            'text' =>$request->content,
         };
         $message->update([
             'content' => $path

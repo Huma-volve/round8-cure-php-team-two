@@ -4,6 +4,7 @@ namespace App\Http\Requests\Chat;
 
 use App\Enums\MessageType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class SendMessageRequest extends FormRequest
@@ -25,21 +26,23 @@ class SendMessageRequest extends FormRequest
     {
         $data = [
             'chat_id' => ['required' , 'exists:chats,id'],
-            'type' => ['required' , new Enum(MessageType::class)],
+            'type' => ['required' , 'in:text,image,video,audio'],
         ];
 
-        if('type' === MessageType::TEXT){
+        $type = $this->input('type');
+
+        if($type === MessageType::TEXT){
             $data['content'] = ['required' , 'string','max:255'];
         }
 
-        if('type' === MessageType::IMAGE){
-            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:jpg,jpeg,png'];
+        if($type === MessageType::IMAGE){
+            $data['content'] = ['required' , 'file' , 'max:2048' , 'mimes:jpg,jpeg,png'];
         }
-        if ('type' === MessageType::VIDEO){
-            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:mp4'];
+        if ($type === MessageType::VIDEO){
+            $data['content'] = ['required' , 'file' , 'max:2048' , 'mimes:mp4'];
         }
-        if('type' === MessageType::AUDIO){
-            $data['file'] = ['required' , 'file' , 'max:2048' , 'mimes:mp3'];
+        if ($type === MessageType::AUDIO){
+            $data['content'] = ['required' , 'file' , 'max:2048' , 'mimes:mp3'];
         }
         return $data;
     }
