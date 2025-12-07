@@ -21,7 +21,7 @@ Route::prefix('auth')->group(function () {
 
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('otp/resend', [AuthController::class, 'resendOtp']); 
+    Route::post('otp/resend', [AuthController::class, 'resendOtp']);
     Route::post('otp/verify', [AuthController::class, 'verifyOtp']);
 
     //Google OAuth Routes
@@ -52,13 +52,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::prefix("reviews")->middleware("auth:sanctum")->group(function(){
-Route::post("/add", [ReviewController::class, "store"]);
-Route::get('/{review}', [ReviewController::class, 'get_review']);
-Route::delete('/delete/{id}', [ReviewController::class, 'destroy_review']);
-Route::put('/{id}/update', [ReviewController::class, 'update']);
+Route::prefix("reviews")->middleware("auth:sanctum")->group(function () {
 
-Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
+    Route::post("/add", [ReviewController::class, "store"]);
+
+    Route::get('/{review}', [ReviewController::class, 'get_review']);
+
+    Route::delete('/delete/{id}', [ReviewController::class, 'destroy_review']);
+
+    Route::put('/{id}/update', [ReviewController::class, 'update']);
+
+    Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
 });
 
 

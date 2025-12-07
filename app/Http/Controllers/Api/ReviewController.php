@@ -19,7 +19,7 @@ class ReviewController extends Controller
     {
         $appointment = Appointment::findOrFail($request->appointment_id);
         $appointmentDateTime = Carbon::parse($appointment['appointment_date'] . ' ' . $appointment['appointment_time']);
-        if ($appointment->user_id!=Auth()->id()) {
+        if ($appointment->user_id != Auth()->id()) {
             return apiResponse(400, "You are not authorized to view this appointment.");
         }
 
@@ -53,7 +53,7 @@ class ReviewController extends Controller
 
         $review->fill($request->validated());
         $review->save();
-          if ($review->user_id!=Auth()->id()) {
+        if ($review->user_id != Auth()->id()) {
             return apiResponse(400, "You are not authorized to Edite this review");
         }
 
@@ -91,7 +91,8 @@ class ReviewController extends Controller
     {
         $reviews = Review::with('user')
             ->where('doctor_id', $doctor_id)
-            ->get();
+            ->paginate(10); 
+
 
         if ($reviews->isEmpty()) {
 
