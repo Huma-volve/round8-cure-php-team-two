@@ -116,7 +116,7 @@
         return apiResponse(false, 'OTP expired.', null, 400);
     }
 
-    $user = User::find($request->user_id);
+    $user = User::find($data['user_id']);
 
    if (!$user) {
     return apiResponse(false, 'User not found.', null, 404);
