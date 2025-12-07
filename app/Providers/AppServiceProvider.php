@@ -8,6 +8,14 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+
+    protected $listen = [
+        \App\Events\SendMessageEvent::class => [
+            \App\Listeners\SendMessageNotificationListener::class,
+        ],
+    ];
+
     protected $policies = [
         Chat::class => ChatPolicy::class,
     ];

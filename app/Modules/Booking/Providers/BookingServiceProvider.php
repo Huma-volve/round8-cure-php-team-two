@@ -7,6 +7,12 @@ use Illuminate\Support\Facades\Route;
 
 class BookingServiceProvider extends ServiceProvider
 {
+    protected $listen = [
+        \App\Events\AppointmentBookedEvent::class => [
+            \App\Listeners\SendAppointmentNotificationListener::class,
+        ],
+    ];
+
     public function boot()
     {
         Route::middleware('api')
