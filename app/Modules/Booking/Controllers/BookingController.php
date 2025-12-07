@@ -76,21 +76,21 @@ class BookingController extends Controller
     public function reschedule(RescheduleAppointmentRequest $request, $id)
     {
         $appointment = Appointment::where('user_id', auth()->id())->findOrFail($id);
-
+        // لو الحجز ملغى → ممنوع إعادة الجدولة
+        if ($appointment->status === AppointmentStatus::Cancelled->value) {
+            return apiResponse(false, 'Cannot reschedule a cancelled appointment.', null, 422);
+        }
         if ($appointment->isBefore24Hours()) {
             return apiResponse(false, 'Reschedule must be at least 24 hours before appointment.', null, 422);
         }
-
         // دمج التاريخ والوقت الجديد مع القديم
         $newDate = $request->appointment_date ?? $appointment->appointment_date;
         $newTime = $request->appointment_time ?? $appointment->appointment_time;
-
+        // التأكد من وجود تغييرات فعلية
         if ($appointment->appointment_date == $newDate &&
-            $appointment->appointment_time == $newTime &&
-            $appointment->status !== AppointmentStatus::Cancelled->value) {
+            $appointment->appointment_time == $newTime) {
             return apiResponse(false, 'No changes detected.', null, 422);
         }
-
         // التحقق من وجود أي حجز آخر لنفس الدكتور بنفس الوقت
         $existingBooking = Appointment::where('doctor_id', $appointment->doctor_id)
             ->where('appointment_date', $newDate)
@@ -113,17 +113,10 @@ class BookingController extends Controller
             return apiResponse(false, "This time is outside the doctor's working hours.", null, 422);
         }
 
-        $updateData = [
+        $appointment->update([
             'appointment_date' => $newDate,
             'appointment_time' => $newTime,
-        ];
-
-        // إذا كان الحجز ملغى → إعادة تنشيطه كـ PendingPayment
-        if ($appointment->status === AppointmentStatus::Cancelled->value) {
-            $updateData['status'] = AppointmentStatus::PendingPayment->value;
-        }
-
-        $appointment->update($updateData);
+        ]);
 
         return apiResponse(
             true,
@@ -131,6 +124,5 @@ class BookingController extends Controller
             new AppointmentResource($appointment->load(['doctor', 'user']))
         );
     }
-
 
 }
