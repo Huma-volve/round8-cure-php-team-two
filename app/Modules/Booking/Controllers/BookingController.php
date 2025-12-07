@@ -9,6 +9,7 @@ use App\Modules\Booking\Requests\RescheduleAppointmentRequest;
 use App\Modules\Booking\Resources\AppointmentResource;
 use App\Modules\Booking\Resources\MyAppointmentResource;
 use App\Modules\Booking\Services\AppointmentService;
+use App\Enums\AppointmentStatus;
 
 class BookingController extends Controller
 {
@@ -43,7 +44,13 @@ class BookingController extends Controller
 
     public function cancel($id)
     {
-        $appointment = Appointment::where('user_id', auth()->id())->findOrFail($id);
+        $appointment = Appointment::where('user_id', auth()->id())
+            ->where('id', $id)
+            ->first();
+
+        if (!$appointment) {
+            return apiResponse(false, 'Appointment not found.', null, 404);
+        }
 
         if ($appointment->isBefore24Hours()) {
             return apiResponse(
@@ -55,7 +62,7 @@ class BookingController extends Controller
         }
 
         $appointment->update([
-            'status' => 'cancelled'
+            'status' => AppointmentStatus::Cancelled->value,
         ]);
 
         return apiResponse(true, 'Appointment cancelled successfully');
@@ -74,10 +81,38 @@ class BookingController extends Controller
             );
         }
 
-        $appointment->update([
-            'appointment_date' => $request->appointment_date,
-            'appointment_time' => $request->appointment_time,
-        ]);
+        // Merge old values with new ones
+        $newDate = $request->appointment_date ?? $appointment->appointment_date;
+        $newTime = $request->appointment_time ?? $appointment->appointment_time;
+
+        // Check if the new slot is available (excluding this appointment itself)
+        $slotTaken = Appointment::where('doctor_id', $appointment->doctor_id)
+            ->where('appointment_date', $newDate)
+            ->where('appointment_time', $newTime)
+            ->where('id', '!=', $appointment->id)
+            ->exists();
+
+        if ($slotTaken) {
+            return apiResponse(
+                false,
+                'This time slot is already booked.',
+                null,
+                422
+            );
+        }
+
+        // Prepare update data
+        $updateData = [
+            'appointment_date' => $newDate,
+            'appointment_time' => $newTime,
+        ];
+
+        // If previously cancelled, reactivate the appointment
+        if ($appointment->status === AppointmentStatus::Cancelled->value) {
+            $updateData['status'] = AppointmentStatus::PendingPayment->value;
+        }
+
+        $appointment->update($updateData);
 
         return apiResponse(
             true,

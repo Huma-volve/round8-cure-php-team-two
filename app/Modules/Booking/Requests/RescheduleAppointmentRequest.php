@@ -14,16 +14,31 @@ class RescheduleAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'appointment_date' => ['required', 'date'],
-            'appointment_time' => ['required', 'date_format:H:i'],
+            'appointment_date' => ['sometimes', 'date'],
+            'appointment_time' => ['sometimes', 'date_format:H:i'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'appointment_date.required' => 'Appointment date is required.',
-            'appointment_time.required' => 'Appointment time is required.',
+            'appointment_date.date' => 'Appointment date must be a valid date.',
+            'appointment_time.date_format' => 'Appointment time must be in HH:MM format.',
         ];
+    }
+
+    protected function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            if (
+                !$this->filled('appointment_date') &&
+                !$this->filled('appointment_time')
+            ) {
+                $validator->errors()->add(
+                    'general',
+                    'You must provide at least date or time to reschedule.'
+                );
+            }
+        });
     }
 }
