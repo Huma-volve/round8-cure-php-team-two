@@ -10,10 +10,12 @@ class DoctorTimeSeeder extends Seeder
 {
     public function run(): void
     {
+        $today = Carbon::today();
+
         $data = [
             [
                 'doctor_id'  => 1,
-                'date'       => '2025-01-10',
+                'date'       => $today->toDateString(),
                 'start_time' => '09:00:00',
                 'end_time'   => '12:00:00',
                 'created_at' => now(),
@@ -21,7 +23,7 @@ class DoctorTimeSeeder extends Seeder
             ],
             [
                 'doctor_id'  => 1,
-                'date'       => '2025-01-11',
+                'date'       => $today->copy()->addDay()->toDateString(),
                 'start_time' => '13:00:00',
                 'end_time'   => '17:00:00',
                 'created_at' => now(),
@@ -29,7 +31,7 @@ class DoctorTimeSeeder extends Seeder
             ],
             [
                 'doctor_id'  => 2,
-                'date'       => '2025-01-10',
+                'date'       => $today->toDateString(),
                 'start_time' => '10:00:00',
                 'end_time'   => '14:00:00',
                 'created_at' => now(),
