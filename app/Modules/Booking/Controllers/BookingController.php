@@ -4,6 +4,7 @@ namespace App\Modules\Booking\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use App\Models\DoctorTime;
 use App\Modules\Booking\Requests\BookAppointmentRequest;
 use App\Modules\Booking\Requests\RescheduleAppointmentRequest;
 use App\Modules\Booking\Resources\AppointmentResource;
@@ -52,6 +53,10 @@ class BookingController extends Controller
             return apiResponse(false, 'Appointment not found.', null, 404);
         }
 
+        if ($appointment->status === AppointmentStatus::Cancelled->value) {
+            return apiResponse(false, 'Appointment is already cancelled.', null, 422);
+        }
+
         if ($appointment->isBefore24Hours()) {
             return apiResponse(
                 false,
@@ -73,41 +78,47 @@ class BookingController extends Controller
         $appointment = Appointment::where('user_id', auth()->id())->findOrFail($id);
 
         if ($appointment->isBefore24Hours()) {
-            return apiResponse(
-                false,
-                'Reschedule must be at least 24 hours before appointment.',
-                null,
-                422
-            );
+            return apiResponse(false, 'Reschedule must be at least 24 hours before appointment.', null, 422);
         }
 
-        // Merge old values with new ones
+        // دمج التاريخ والوقت الجديد مع القديم
         $newDate = $request->appointment_date ?? $appointment->appointment_date;
         $newTime = $request->appointment_time ?? $appointment->appointment_time;
 
-        // Check if the new slot is available (excluding this appointment itself)
-        $slotTaken = Appointment::where('doctor_id', $appointment->doctor_id)
+        if ($appointment->appointment_date == $newDate &&
+            $appointment->appointment_time == $newTime &&
+            $appointment->status !== AppointmentStatus::Cancelled->value) {
+            return apiResponse(false, 'No changes detected.', null, 422);
+        }
+
+        // التحقق من وجود أي حجز آخر لنفس الدكتور بنفس الوقت
+        $existingBooking = Appointment::where('doctor_id', $appointment->doctor_id)
             ->where('appointment_date', $newDate)
             ->where('appointment_time', $newTime)
             ->where('id', '!=', $appointment->id)
-            ->exists();
+            ->first();
 
-        if ($slotTaken) {
-            return apiResponse(
-                false,
-                'This time slot is already booked.',
-                null,
-                422
-            );
+        if ($existingBooking && $existingBooking->status !== AppointmentStatus::Cancelled->value) {
+            return apiResponse(false, 'This time slot is already booked.', null, 422);
         }
 
-        // Prepare update data
+        // التحقق من ساعات عمل الدكتور
+        $isWithinWorkingHours = DoctorTime::where('doctor_id', $appointment->doctor_id)
+            ->where('date', $newDate)
+            ->whereTime('start_time', '<=', $newTime)
+            ->whereTime('end_time', '>=', $newTime)
+            ->exists();
+
+        if (!$isWithinWorkingHours) {
+            return apiResponse(false, "This time is outside the doctor's working hours.", null, 422);
+        }
+
         $updateData = [
             'appointment_date' => $newDate,
             'appointment_time' => $newTime,
         ];
 
-        // If previously cancelled, reactivate the appointment
+        // إذا كان الحجز ملغى → إعادة تنشيطه كـ PendingPayment
         if ($appointment->status === AppointmentStatus::Cancelled->value) {
             $updateData['status'] = AppointmentStatus::PendingPayment->value;
         }
@@ -120,4 +131,6 @@ class BookingController extends Controller
             new AppointmentResource($appointment->load(['doctor', 'user']))
         );
     }
+
+
 }

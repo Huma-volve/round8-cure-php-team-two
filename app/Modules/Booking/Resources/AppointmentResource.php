@@ -19,6 +19,7 @@ class AppointmentResource extends JsonResource
             'created_at'       => $this->created_at,
             'updated_at'       => $this->updated_at,
             'doctor'           => $this->doctor ? $this->doctor->name : null,
+//            'doctor'           => $this->whenLoaded('doctor'),
             'patient'          => $this->user ? $this->user->name : null,
         ];
     }
