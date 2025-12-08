@@ -12,6 +12,7 @@ use App\Modules\Booking\Resources\AppointmentResource;
 use App\Modules\Booking\Resources\MyAppointmentResource;
 use App\Modules\Booking\Services\AppointmentService;
 use App\Enums\AppointmentStatus;
+use App\Events\AppointmentCanceledEvent;
 
 class BookingController extends Controller
 {
@@ -72,7 +73,7 @@ class BookingController extends Controller
         $appointment->update([
             'status' => AppointmentStatus::Cancelled->value,
         ]);
-
+         event(new AppointmentCanceledEvent($appointment));
         return apiResponse(true, 'Appointment cancelled successfully');
     }
 
