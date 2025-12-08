@@ -15,14 +15,13 @@ class NotificationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+        
             'type' => $this->type,
             'notifiable_type' => $this->notifiable_type,
             'notifiable_id' => $this->notifiable_id,
             'data' => $this->data, 
             'read_at' => $this->read_at ? $this->read_at->toDateTimeString() : null,
             'created_at' => $this->created_at ? $this->created_at->toDateTimeString() : null,
-            'updated_at' => $this->updated_at ? $this->updated_at->toDateTimeString() : null,
         ];
     }
 }
