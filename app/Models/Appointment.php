@@ -24,11 +24,30 @@ class Appointment extends Model
         'status' => AppointmentStatus::class,
     ];
 
-    public function review() { return $this->hasOne(Review::class); }
-    public function doctor() { return $this->belongsTo(User::class, 'doctor_id'); }
-    public function patient() { return $this->belongsTo(User::class, 'user_id'); }
-    public function payment() { return $this->hasOne(Payment::class); }
-    public function user() { return $this->belongsTo(User::class, 'user_id'); }
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    public function doctor()
+    {
+        return $this->belongsTo(User::class, 'doctor_id');
+    }
+
+    public function patient()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     // التحقق من إمكانية الإلغاء أو إعادة الجدولة
     public function canCancelOrReschedule(): bool
@@ -39,9 +58,7 @@ class Appointment extends Model
             $this->appointment_date . ' ' . substr($this->appointment_time, 0, 5)
         );
 
-        // ضبط الـ timezone للتأكد من المقارنة الصحيحة
-        $appointmentDateTime->setTimezone(config('app.timezone'));
-
-        return Carbon::now()->setTimezone(config('app.timezone'))->lt($appointmentDateTime);
+        // مقارنة الوقت الحالي بالموعد
+        return Carbon::now()->lt($appointmentDateTime);
     }
 }

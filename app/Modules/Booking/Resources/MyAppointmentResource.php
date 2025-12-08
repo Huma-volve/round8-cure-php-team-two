@@ -20,8 +20,8 @@ class MyAppointmentResource extends JsonResource
             'date'          => $this->appointment_date,
             'time'          => $this->appointment_time,
             'status'        => $this->status->value ?? $this->status,
-            'can_reschedule'=> !$this->isBefore24Hours(),
-            'can_cancel'    => !$this->isBefore24Hours(),
+            'can_reschedule'=> $this->resource->canCancelOrReschedule(),
+            'can_cancel'    => $this->resource->canCancelOrReschedule(),
         ];
     }
 }

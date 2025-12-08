@@ -3,6 +3,8 @@
 namespace App\Modules\Booking\Controllers;
 
 use App\Events\AppointmentBookedEvent;
+use App\Events\AppointmentCanceledEvent;
+use App\Events\AppointmentUpdatedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\DoctorTime;
@@ -12,19 +14,17 @@ use App\Modules\Booking\Resources\AppointmentResource;
 use App\Modules\Booking\Resources\MyAppointmentResource;
 use App\Modules\Booking\Services\AppointmentService;
 use App\Enums\AppointmentStatus;
-use App\Events\AppointmentCanceledEvent;
-use App\Events\AppointmentUpdatedEvent;
 
 class BookingController extends Controller
 {
-    public function __construct(protected AppointmentService $service)
-    {
-    }
+    public function __construct(protected AppointmentService $service) {}
 
+    // حجز موعد جديد
     public function book(BookAppointmentRequest $request)
     {
         $appointment = $this->service->book($request->validated());
         event(new AppointmentBookedEvent($appointment));
+
         return apiResponse(
             true,
             'Appointment booked successfully',
@@ -33,6 +33,7 @@ class BookingController extends Controller
         );
     }
 
+    // جلب جميع مواعيد المستخدم
     public function myBookings()
     {
         $appointments = Appointment::with(['doctor', 'user'])
@@ -48,6 +49,7 @@ class BookingController extends Controller
         );
     }
 
+    // إلغاء موعد
     public function cancel($id)
     {
         $appointment = Appointment::where('user_id', auth()->id())
@@ -74,10 +76,13 @@ class BookingController extends Controller
         $appointment->update([
             'status' => AppointmentStatus::Cancelled->value,
         ]);
-         event(new AppointmentCanceledEvent($appointment));
+
+        event(new AppointmentCanceledEvent($appointment));
+
         return apiResponse(true, 'Appointment cancelled successfully');
     }
 
+    // إعادة جدولة موعد
     public function reschedule(RescheduleAppointmentRequest $request, $id)
     {
         $appointment = Appointment::where('user_id', auth()->id())->findOrFail($id);
@@ -129,8 +134,8 @@ class BookingController extends Controller
             'appointment_date' => $newDate,
             'appointment_time' => $newTime,
         ]);
-        event(new AppointmentUpdatedEvent($appointment));
 
+        event(new AppointmentUpdatedEvent($appointment));
 
         return apiResponse(
             true,
