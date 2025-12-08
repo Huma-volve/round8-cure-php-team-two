@@ -57,10 +57,10 @@ class BookingController extends Controller
             return apiResponse(false, 'Appointment is already cancelled.', null, 422);
         }
 
-        if ($appointment->isBefore24Hours()) {
+        if (!$appointment->canCancelOrReschedule()) {
             return apiResponse(
                 false,
-                'Cancellation must be made at least 24 hours in advance.',
+                'Cannot cancel the appointment after the appointment time has passed.',
                 null,
                 422
             );
@@ -76,21 +76,28 @@ class BookingController extends Controller
     public function reschedule(RescheduleAppointmentRequest $request, $id)
     {
         $appointment = Appointment::where('user_id', auth()->id())->findOrFail($id);
-        // لو الحجز ملغى → ممنوع إعادة الجدولة
+
         if ($appointment->status === AppointmentStatus::Cancelled->value) {
             return apiResponse(false, 'Cannot reschedule a cancelled appointment.', null, 422);
         }
-        if ($appointment->isBefore24Hours()) {
-            return apiResponse(false, 'Reschedule must be at least 24 hours before appointment.', null, 422);
+
+        if (!$appointment->canCancelOrReschedule()) {
+            return apiResponse(
+                false,
+                'Cannot reschedule the appointment after the appointment time has passed.',
+                null,
+                422
+            );
         }
-        // دمج التاريخ والوقت الجديد مع القديم
+
         $newDate = $request->appointment_date ?? $appointment->appointment_date;
         $newTime = $request->appointment_time ?? $appointment->appointment_time;
-        // التأكد من وجود تغييرات فعلية
+
         if ($appointment->appointment_date == $newDate &&
             $appointment->appointment_time == $newTime) {
             return apiResponse(false, 'No changes detected.', null, 422);
         }
+
         // التحقق من وجود أي حجز آخر لنفس الدكتور بنفس الوقت
         $existingBooking = Appointment::where('doctor_id', $appointment->doctor_id)
             ->where('appointment_date', $newDate)
@@ -124,5 +131,4 @@ class BookingController extends Controller
             new AppointmentResource($appointment->load(['doctor', 'user']))
         );
     }
-
 }
