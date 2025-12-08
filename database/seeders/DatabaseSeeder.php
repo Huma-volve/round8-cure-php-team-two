@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SpecialtySeeder::class,
             DoctorSeeder::class,
+            RoleSeeder::class,
+            DoctorTimeSeeder::class,
         ]);
     }
 }

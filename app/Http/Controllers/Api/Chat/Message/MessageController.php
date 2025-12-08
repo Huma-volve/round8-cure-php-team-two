@@ -71,7 +71,10 @@ class MessageController extends Controller
         if ($messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success', new MessageCollection($messages)->response()->getData(true));
+
+      
+        return apiResponse(200, 'success',(new MessageCollection($messages))->response()->getData(true));
+
 
     }
 

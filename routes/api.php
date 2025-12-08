@@ -73,7 +73,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('chats')->controller(ChatController::class)->group(function () {
             Route::get('/', 'fetchUserChats');
             Route::post('/', 'createOrFetchChat');
-            Route::get('/{id}', 'fetchChatMessages');
+//            Route::get('/{id}', 'fetchChatMessages');
         });
         //============================== End Chats =================================//
         //==============================  Messages =================================//
