@@ -2,6 +2,7 @@
 
 namespace App\Modules\Booking\Controllers;
 
+use App\Events\AppointmentBookedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\DoctorTime;
@@ -11,15 +12,19 @@ use App\Modules\Booking\Resources\AppointmentResource;
 use App\Modules\Booking\Resources\MyAppointmentResource;
 use App\Modules\Booking\Services\AppointmentService;
 use App\Enums\AppointmentStatus;
+use App\Events\AppointmentCanceledEvent;
+use App\Events\AppointmentUpdatedEvent;
 
 class BookingController extends Controller
 {
-    public function __construct(protected AppointmentService $service) {}
+    public function __construct(protected AppointmentService $service)
+    {
+    }
 
     public function book(BookAppointmentRequest $request)
     {
         $appointment = $this->service->book($request->validated());
-
+        event(new AppointmentBookedEvent($appointment));
         return apiResponse(
             true,
             'Appointment booked successfully',
@@ -69,7 +74,7 @@ class BookingController extends Controller
         $appointment->update([
             'status' => AppointmentStatus::Cancelled->value,
         ]);
-
+         event(new AppointmentCanceledEvent($appointment));
         return apiResponse(true, 'Appointment cancelled successfully');
     }
 
@@ -124,6 +129,8 @@ class BookingController extends Controller
             'appointment_date' => $newDate,
             'appointment_time' => $newTime,
         ]);
+        event(new AppointmentUpdatedEvent($appointment));
+
 
         return apiResponse(
             true,
