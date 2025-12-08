@@ -3,8 +3,11 @@
 namespace App\Modules\Booking\Services;
 
 use App\Models\Doctor;
+use App\Models\DoctorTime;
 use App\Modules\Booking\Repositories\AppointmentRepository;
 use App\Enums\AppointmentStatus;
+use Illuminate\Support\Facades\DB;
+use Exception;
 
 class AppointmentService
 {
@@ -12,15 +15,32 @@ class AppointmentService
 
     public function book(array $data)
     {
-        $doctor = Doctor::findOrFail($data['doctor_id']);
-        return $this->repo->create([
-            'doctor_id'        => $data['doctor_id'],
-            'user_id'          => auth()->id(),
-            'appointment_date' => $data['date'],  // map date -> appointment_date
-            'appointment_time' => $data['time'],  // map time -> appointment_time
-            'status'           => $data['status'] ?? AppointmentStatus::PendingPayment->value,
-            'price'            => $doctor->price,
-        ]);
+        return DB::transaction(function () use ($data) {
 
+            $doctor = Doctor::findOrFail($data['doctor_id']);
+
+            // نتأكد إن المعاد لسه متاح
+            $slot = DoctorTime::where('doctor_id', $data['doctor_id'])
+                ->where('date', $data['date'])
+                ->where('start_time', $data['time'])
+                ->first();
+
+            if (! $slot) {
+                throw new Exception('This time is no longer available.');
+            }
+
+            $appointment = $this->repo->create([
+                'doctor_id'        => $data['doctor_id'],
+                'user_id'          => auth()->id(),
+                'appointment_date' => $data['date'],
+                'appointment_time' => $data['time'],
+                'status'           => $data['status'] ?? AppointmentStatus::PendingPayment->value,
+                'price'            => $doctor->price,
+            ]);
+
+            $slot->delete();
+
+            return $appointment;
+        });
     }
 }

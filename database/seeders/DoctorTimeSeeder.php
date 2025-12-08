@@ -10,34 +10,38 @@ class DoctorTimeSeeder extends Seeder
 {
     public function run(): void
     {
-        $today = Carbon::today();
+        $data = [];
 
-        $data = [
-            [
-                'doctor_id'  => 1,
-                'date'       => $today->toDateString(),
-                'start_time' => '09:00:00',
-                'end_time'   => '12:00:00',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'doctor_id'  => 1,
-                'date'       => $today->copy()->addDay()->toDateString(),
-                'start_time' => '13:00:00',
-                'end_time'   => '17:00:00',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'doctor_id'  => 2,
-                'date'       => $today->toDateString(),
-                'start_time' => '10:00:00',
-                'end_time'   => '14:00:00',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ];
+        $doctors = [1, 2, 3]; // ids of doctors
+        $daysCount = 7; // عدد الأيام اللي هتتحجز ليها مواعيد
+
+        foreach ($doctors as $doctorId) {
+            for ($i = 0; $i < $daysCount; $i++) {
+                $date = Carbon::today()->addDays($i);
+
+                $start = Carbon::createFromTime(9, 0);
+                $end   = Carbon::createFromTime(15, 0);
+
+                while ($start->lt($end)) {
+                    $slotEnd = $start->copy()->addHour();
+
+                    if ($slotEnd->gt($end)) {
+                        break;
+                    }
+
+                    $data[] = [
+                        'doctor_id'  => $doctorId,
+                        'date'       => $date->toDateString(),
+                        'start_time' => $start->format('H:i'),
+                        'end_time'   => $slotEnd->format('H:i'),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+
+                    $start->addHour();
+                }
+            }
+        }
 
         DB::table('doctor_times')->insert($data);
     }
