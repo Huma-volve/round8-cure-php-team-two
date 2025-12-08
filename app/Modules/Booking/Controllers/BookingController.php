@@ -13,6 +13,7 @@ use App\Modules\Booking\Resources\MyAppointmentResource;
 use App\Modules\Booking\Services\AppointmentService;
 use App\Enums\AppointmentStatus;
 use App\Events\AppointmentCanceledEvent;
+use App\Events\AppointmentUpdatedEvent;
 
 class BookingController extends Controller
 {
@@ -121,6 +122,8 @@ class BookingController extends Controller
             'appointment_date' => $newDate,
             'appointment_time' => $newTime,
         ]);
+        event(new AppointmentUpdatedEvent($appointment));
+
 
         return apiResponse(
             true,

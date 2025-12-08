@@ -12,10 +12,13 @@ class BookingServiceProvider extends ServiceProvider
             \App\Listeners\SendAppointmentNotificationListener::class,
         ],
         \App\events\AppointmentCanceledEvent::class => [
-           \App\Listeners\SendAppointmentCanceledNotificationListeners::class,
+            \App\Listeners\SendAppointmentCanceledNotificationListeners::class,
         ],
+        \App\Events\AppointmentUpdatedEvent::class => [
+            \App\Listeners\SendAppointmentUpdatedNotificationListener::class,
+        ]
     ];
-   
+
 
     public function boot()
     {
