@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
+
+use Illuminate\Notifications\DatabaseNotification as BaseNotification;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Notification extends Model
+class Notification extends BaseNotification
 {
+    use HasFactory;
      protected $fillable = [
         'user_id',
         'title',
