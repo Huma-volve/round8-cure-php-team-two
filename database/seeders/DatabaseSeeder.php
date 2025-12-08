@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        // Notification::factory()->count(5)->read()->create();
-        // Notification::factory()->count(5)->unread()->create();
+        Notification::factory()->count(5)->read()->create();
+        Notification::factory()->count(5)->unread()->create();
         
         
         $this->call([
