@@ -1,37 +1,23 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/pusher-test', function () {
+Route::get('/login', function () {
+    return view('dashboard');
+});
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-//     try {
-//         $pusher = new \Pusher\Pusher(
-//             env('PUSHER_APP_KEY'),
-//             env('PUSHER_APP_SECRET'),
-//             env('PUSHER_APP_ID'),
-//             [
-//                 'cluster' => env('PUSHER_APP_CLUSTER'),
-//                 'useTLS' => true
-//             ]
-//         );
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-//         $response = $pusher->trigger('test-channel', 'test-event', ['message' => 'Hello']);
-
-//         return [
-//             'status' => $response ? 'success' : 'failed',
-//             'response' => $response
-//         ];
-
-//     } catch (\Exception $e) {
-//         return [
-//             'status' => 'error',
-//             'error' => $e->getMessage()
-//         ];
-//     }
-// });
-
-
+require __DIR__.'/auth.php';
