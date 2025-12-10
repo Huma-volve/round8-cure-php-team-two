@@ -16,12 +16,12 @@ class AdminSeeder extends Seeder
         Admin::create([
             'name' => 'Super Admin',
             'email' => 'admin@cure.com',
-            'password' => bcrypt('admin123'),
+            'password' => 'admin123',
         ]);
         Admin::create([
             'name' => 'Huma Super Admin',
             'email' => 'huma@cure.com',
-            'password' => bcrypt('volve123'),
+            'password' => 'volve123',
         ]);
     }
 }

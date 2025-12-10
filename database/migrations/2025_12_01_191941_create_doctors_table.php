@@ -20,10 +20,10 @@ return new class extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->longText('bio')->nullable();
             $table->string('phone')->unique();
-            $table->integer('price');
-            $table->string('hospital_name');
+            $table->integer('price')->nullable();
+            $table->string('hospital_name')->nullable();
             $table->json('location')->nullable();
-            $table->integer('exp_years');
+            $table->integer('exp_years')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamp('email_verified_at')->nullable();
             $table->foreignId('specialty_id')->constrained('specialties')->onDelete('cascade');
