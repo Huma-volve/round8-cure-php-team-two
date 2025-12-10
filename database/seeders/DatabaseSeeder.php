@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             DoctorSeeder::class,
             RoleSeeder::class,
             DoctorTimeSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }

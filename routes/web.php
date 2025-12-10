@@ -1,37 +1,37 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route::get('/pusher-test', function () {
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-//     try {
-//         $pusher = new \Pusher\Pusher(
-//             env('PUSHER_APP_KEY'),
-//             env('PUSHER_APP_SECRET'),
-//             env('PUSHER_APP_ID'),
-//             [
-//                 'cluster' => env('PUSHER_APP_CLUSTER'),
-//                 'useTLS' => true
-//             ]
-//         );
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
-//         $response = $pusher->trigger('test-channel', 'test-event', ['message' => 'Hello']);
+require __DIR__.'/auth.php';
 
-//         return [
-//             'status' => $response ? 'success' : 'failed',
-//             'response' => $response
-//         ];
+// Admin Dashboard Routes
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/doctor/create', [App\Http\Controllers\AdminController::class, 'createDoctor'])->name('doctor.create');
+    Route::get('/doctor', [App\Http\Controllers\AdminController::class, 'listDoctors'])->name('doctor.index');
+    Route::delete('/doctor/destroy/{doctor}', [App\Http\Controllers\AdminController::class, 'deleteDoctor'])->name('doctor.destroy');
+    Route::post('/doctor/store', [App\Http\Controllers\AdminController::class, 'storeDoctor'])->name('doctor.store');
+});
 
-//     } catch (\Exception $e) {
-//         return [
-//             'status' => 'error',
-//             'error' => $e->getMessage()
-//         ];
-//     }
-// });
-
-
+// Doctor Dashboard Routes
+Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
+    Route::get('/dashboard', [App\Http\Controllers\DoctorController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
+    Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
+    Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
+});

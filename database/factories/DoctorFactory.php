@@ -25,7 +25,7 @@ class DoctorFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => Hash::make('password'),
+            'password' => 'password',
             'phone' => $this->faker->phoneNumber(),
             'image' => $this->faker->imageUrl(640, 480, 'people'),
             'status' => true,
