@@ -22,7 +22,7 @@ class PatientController extends Controller
     {
     $patient = $request->user();
 
-    $data = $request->only(['name', 'email', 'phone', 'gender', 'birthdate']);
+    $data = $request->only(['name', 'email', 'gender', 'birthdate']);
 
     if ($request->hasFile('image')) {
         ImageManagement::uploadImage($request, $patient);

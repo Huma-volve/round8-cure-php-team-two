@@ -27,7 +27,6 @@ class UpdatePatientRequest extends FormRequest
         return [
                 'name' => ['nullable', 'string', 'max:255'],
                 'email' => ['nullable', 'email', 'max:255', Rule::unique('patients')->ignore($patientId)],
-                'phone' => ['nullable', 'string', 'max:30', Rule::unique('patients')->ignore($patientId)],
                 'gender' => ['nullable', Rule::in(['male', 'female', 'other'])],
                 'birthdate' => ['nullable', 'date', 'before:today'],
                 'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
