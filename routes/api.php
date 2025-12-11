@@ -6,33 +6,43 @@ use App\Http\Controllers\Api\Chat\Message\MessageController;
 use App\Http\Controllers\Api\Chat\Room\ChatController;
 use App\Http\Controllers\Api\Chat\Search\SearchController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\User\PatientController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
+use Termwind\Components\Raw;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::prefix('auth')->group(function () {
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('login', [AuthController::class, 'login']);
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
 
-    Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('otp/resend', [AuthController::class, 'resendOtp']);
-    Route::post('otp/verify', [AuthController::class, 'verifyOtp']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    Route::post('/otp/resend', [AuthController::class, 'resendOtp']); 
+    Route::post('/otp/verify', [AuthController::class, 'verifyOtp']);
 
     //Google OAuth Routes
-    Route::get('google/redirect', [AuthController::class, 'googleRedirect'])->middleware('web');
-    Route::get('google/callback', [AuthController::class, 'googleCallback'])->middleware('web');
+    Route::get('/google/redirect', [AuthController::class, 'googleRedirect'])->middleware('web');
+    Route::get('/google/callback', [AuthController::class, 'googleCallback'])->middleware('web');
 });
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::post('auth/logout', [AuthController::class, 'logout']);
-    Route::post('auth/delete', [AuthController::class, 'deleteAccount']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+    Route::post('/auth/delete', [AuthController::class, 'deleteAccount']);
+});
+
+
+Route::middleware(('auth:sanctum'))->group(function () {
+    Route::get('/patient/profile', [PatientController::class, 'show']);
+    Route::put('/patient/profile', [PatientController::class, 'update']);
+    Route::put('/patient/profile/password', [PatientController::class, 'updatePassword']);
+
 });
 
 
