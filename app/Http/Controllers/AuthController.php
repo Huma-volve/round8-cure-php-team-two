@@ -92,7 +92,7 @@ class AuthController extends Controller
             return apiResponse(false, 'User not found.', null, 404);
         }
         $otpResult = $this->authOtpService->sendOtp($user->id, $user->phone);
-        return apiResponse(true, 'OTP sent to your WhatsApp for password reset.', ['otp' => $otpResult['otp'] ?? null], 200);
+        return apiResponse(true, 'OTP sent to your WhatsApp for password reset.', ['otp' => $otpResult ], 200);
     }
 
 
