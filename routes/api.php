@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\User\PatientController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 use Termwind\Components\Raw;
 
@@ -45,12 +46,35 @@ Route::middleware(('auth:sanctum'))->group(function () {
 });
 
 
-Route::post("reviews/add", [ReviewController::class, "store"]);
-Route::get('reviews/{review}', [ReviewController::class, 'get_review']);
-Route::delete('/reviews/delete/{id}', [ReviewController::class, 'destroy_review']);
-Route::put('/reviews/{id}/update', [ReviewController::class, 'update']);
+Route::middleware('auth:sanctum')->group(function () {
 
-Route::get('/doctors/{doctor_id}/reviews', [ReviewController::class, 'get_reviews_to_doctor']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+
+    Route::get('/notifications/unread', [NotificationController::class, 'unread']);
+
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy']);
+
+    Route::delete('/notifications', [NotificationController::class, 'destroyAll']);
+
+});
+
+Route::prefix("reviews")->middleware("auth:sanctum")->group(function () {
+
+    Route::post("/add", [ReviewController::class, "store"]);
+
+    Route::get('/{review}', [ReviewController::class, 'get_review']);
+
+    Route::delete('/delete/{id}', [ReviewController::class, 'destroy_review']);
+
+    Route::put('/{id}/update', [ReviewController::class, 'update']);
+
+    Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
+});
+
 
 Route::prefix('v1')->group(function () {
 
@@ -59,7 +83,7 @@ Route::prefix('v1')->group(function () {
         Route::prefix('chats')->controller(ChatController::class)->group(function () {
             Route::get('/', 'fetchUserChats');
             Route::post('/', 'createOrFetchChat');
-            Route::get('/{id}', 'fetchChatMessages');
+//            Route::get('/{id}', 'fetchChatMessages');
         });
         //============================== End Chats =================================//
         //==============================  Messages =================================//

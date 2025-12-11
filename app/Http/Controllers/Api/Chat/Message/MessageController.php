@@ -25,8 +25,7 @@ class MessageController extends Controller
             $auth = auth()->user();
             $chat = $auth->chats()->find($request->chat_id);
 
-            if(!$chat)
-            {
+            if (!$chat) {
                 return apiResponse(404, 'chat not found');
             }
             $message = $auth->messages()->create([
@@ -48,7 +47,7 @@ class MessageController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            return apiResponse(500, 'server error',$remaining);
+            return apiResponse(500, 'server error', $remaining);
         }
 
     }
@@ -72,7 +71,10 @@ class MessageController extends Controller
         if ($messages->count() == 0) {
             return apiResponse(200, 'no messages yet');
         }
-        return apiResponse(200, 'success',new MessageCollection($messages)->response()->getData(true));
+
+      
+        return apiResponse(200, 'success',(new MessageCollection($messages))->response()->getData(true));
+
 
     }
 

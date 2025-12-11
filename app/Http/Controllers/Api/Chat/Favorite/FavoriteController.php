@@ -17,7 +17,7 @@ class FavoriteController extends Controller
             return apiResponse(401, 'unauthorized');
         }
         $favoriteChats = $auth->favoriteChats()->with('doctor')->paginate($perPage);
-        return apiResponse(200, 'success', new RoomCollection($favoriteChats)->response()->getData(true));
+        return apiResponse(200, 'success', (new RoomCollection($favoriteChats))->response()->getData(true));
     }
 
     public function addToFavorite($id)
