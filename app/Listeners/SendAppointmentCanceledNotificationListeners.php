@@ -20,15 +20,15 @@ class SendAppointmentCanceledNotificationListeners
     /**
      * Handle the event.
      */
-    public function handle(AppointmentCanceledEvent $event): void
-    {
-        $appointment = $event->appointment;
-
-        // جيب الدكتور
-        $doctor = $appointment->doctor;
-
-        // ابعت له الإشعار
-        $doctor->notify(new AppointmentCanceledNotification ($appointment));
-  
-    }
+//    public function handle(AppointmentCanceledEvent $event): void
+//    {
+//        $appointment = $event->appointment;
+//
+//        // جيب الدكتور
+//        $doctor = $appointment->doctor;
+//
+//        // ابعت له الإشعار
+//        $doctor->notify(new AppointmentCanceledNotification ($appointment));
+//
+//    }
 }
