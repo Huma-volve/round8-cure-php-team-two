@@ -12,4 +12,4 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 
 Broadcast::channel('chat.{id}', function ($user, $id) {
     return $user->chats()->where('chats.id', $id)->exists();
-});
+},['guards' => ['sanctum', 'doctor']]);
