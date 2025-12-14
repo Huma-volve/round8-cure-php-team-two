@@ -9,7 +9,7 @@
 <!-- Core Css -->
 <link rel="stylesheet" href="{{ asset('assets') }}/css/styles.css" />
 
-<title>Modernize Bootstrap Admin</title>
+<title>Doctor Dashboard</title>
 <!-- Owl Carousel  -->
 <link rel="stylesheet" href="{{ asset('assets') }}/libs/owl.carousel/dist/assets/owl.carousel.min.css" />
 
