@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,4 +35,14 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
     Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
     Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
-});
+
+
+
+        // ================================= Doctor Chat =================================================//
+
+        // ================================= End Doctor Chat =================================================//
+    });
+    Route::controller(ChatController::class)->group(function () {
+        Route::get('/chats', 'index')->name('chats.index');
+        Route::get('/chats/{id}', 'show');
+    });
