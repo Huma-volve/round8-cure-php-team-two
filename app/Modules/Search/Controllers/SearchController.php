@@ -17,6 +17,20 @@ class SearchController extends Controller
         return $request->user() ?? abort(401, 'User not authenticated');
     }
 
+    public function allDoctors(Request $request)
+    {
+        $this->getUser($request);
+
+        $doctors = $this->repository->getAllDoctors();
+
+        return apiResponse(
+            true,
+            'All doctors loaded successfully',
+            DoctorResource::collection($doctors)
+        );
+    }
+
+
     public function search(SearchRequest $request)
     {
         $user = $this->getUser($request);

@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SearchRepository
 {
+
+    public function getAllDoctors(int $limit = 20)
+    {
+        return Doctor::query()
+            ->with('specialty')
+            ->orderBy('id', 'desc')
+            ->paginate($limit);
+    }
     public function searchDoctors(string $keyword, int $limit = 20): Collection
     {
         return Doctor::query()
