@@ -35,7 +35,7 @@ class SendMessageEvent implements ShouldBroadcastNow
         return [
             'id' => $this->message->id,
             'chat_id' => $this->message->chat_id,
-            'sender_type' => $this->message->sender_type === 'App\Models\User' ? 'user' : 'doctor',
+            'sender_type' => $this->message->sender_type ,
             'sender_id' => $this->message->sender_id,
             'type' => $this->message->type,
             'content' => $this->message->content,
