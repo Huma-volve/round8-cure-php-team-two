@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= 'password',
             'remember_token' => Str::random(10),
             'phone' => fake()->phoneNumber(),
-            'image' => fake()->imageUrl(),
+            'image' => public_path('user-1.jpg'),
             'status' => true,
             'provider_id' => null,
             'location' => [

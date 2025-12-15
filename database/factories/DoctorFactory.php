@@ -27,7 +27,7 @@ class DoctorFactory extends Factory
             'email_verified_at' => now(),
             'password' => 'password',
             'phone' => $this->faker->phoneNumber(),
-            'image' => $this->faker->imageUrl(640, 480, 'people'),
+            'image' => public_path('user-6.jpg'),
             'status' => true,
             'location' => [
                 'lat' => $this->faker->latitude(),

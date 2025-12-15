@@ -35,7 +35,7 @@
                 {{-- end doctor info with search --}}
 
                 {{-- chat list --}}
-                @include('doctor.chat.inc.chat-list')
+                @include('doctor.chat.inc.chat-list', ['chats' => $chats])
                 {{-- end chat list --}}
 
             </div>
@@ -115,7 +115,7 @@
                                 <div class="d-flex align-items-center justify-content-between">
                                     <div class="d-flex align-items-center gap-2 w-85">
                                         <a class="position-relative nav-icon-hover z-index-5" href="javascript:void(0)">
-                                            <i class="ti ti-mood-smile text-dark bg-hover-primary fs-7"></i>
+                                            <i class="ti ti-heart text-dark bg-hover-primary fs-7"></i>
                                         </a>
                                         <input type="text"
                                             class="form-control message-type-box text-muted border-0 p-0 ms-2"
@@ -149,7 +149,7 @@
 
 
                         {{-- chat offcanvas --}}
-                        @include('doctor.chat.inc.fav')
+                        @include('doctor.chat.inc.fav', ['favChats' => $favChats])
                         {{-- end chat offcanvas --}}
                     </div>
 
@@ -159,3 +159,5 @@
     </div>
     </div>
 @endsection
+
+

@@ -36,7 +36,12 @@ class FavoriteController extends Controller
             return apiResponse(400, 'chat already in favorites');
         }
 
-        $auth->favoriteChats()->syncWithoutDetaching($chat->id);
+        $auth->favoriteChats()->syncWithoutDetaching([
+            $chat->id => [
+                'user_id' => $auth->id,
+                'doctor_id' => $chat->doctor_id
+            ]
+        ]);
         return apiResponse(200, 'Chat added to favorites');
     }
 

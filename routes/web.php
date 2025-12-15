@@ -39,10 +39,10 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
 
 
         // ================================= Doctor Chat =================================================//
+        Route::controller(ChatController::class)->group(function () {
+            Route::get('/chats', 'index')->name('chats.index');
+            Route::get('/chats/{id}', 'show');
+        });
 
         // ================================= End Doctor Chat =================================================//
-    });
-    Route::controller(ChatController::class)->group(function () {
-        Route::get('/chats', 'index')->name('chats.index');
-        Route::get('/chats/{id}', 'show');
     });
