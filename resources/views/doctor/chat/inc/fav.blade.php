@@ -22,7 +22,7 @@
                                 <span class="fs-3 text-truncate text-body-color d-block">{{ $fav->lastMessage?->content }}</span>
                             </div>
                         </div>
-                       <span class="fs-2 mb-0">{{ $fav->messages->count() }}</span>
+                       <span class="fs-2 mb-0">{{ $fav->unread_messages_count }}</span>
                     </a>
                 </li>
                 @endforeach

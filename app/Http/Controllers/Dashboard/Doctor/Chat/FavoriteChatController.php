@@ -24,12 +24,7 @@ class FavoriteChatController extends Controller
             );
         }
 
-        Auth::guard('doctor')->user()->favoriteChats()->syncWithoutDetaching([
-            $chat->id => [
-                'doctor_id' => Auth::guard('doctor')->user()->id,
-                'user_id' => $chat->user_id
-            ]
-        ]);
+        Auth::guard('doctor')->user()->favoriteChats()->syncWithoutDetaching($chat->id);
 
         return response()->json([
             'message' => 'Chat added to favorites'

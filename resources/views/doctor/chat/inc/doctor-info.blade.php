@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify-content-between mb-3">
         <div class="d-flex align-items-center">
             <div class="position-relative">
-                <img src="{{ auth('doctor')->user()->image() }}" alt="user1" width="54" height="54"
+                <img src="{{auth()->guard('doctor')->user()->image }}" alt="user1" width="54" height="54"
                     class="rounded-circle" />
             </div>
             <div class="ms-3">

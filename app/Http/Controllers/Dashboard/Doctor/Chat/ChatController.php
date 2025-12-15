@@ -11,15 +11,15 @@ class ChatController extends Controller
     public function index()
     {
         $chats = Auth::guard('doctor')->user()
-            ->chats()->with(['lastMessage',
-             'doctor',
-             'user' => fn($q) => $q->select('id', 'name' , 'image'),
-            'messages' => fn($q) => $q->whereSeen(0)->select('id', 'seen')])
+            ->chats()->with(['lastMessage','messages','user' => fn($q) => $q->select('id', 'name', 'image')])
+            ->withCount(['messages as unread_messages_count' => fn($q) =>$q->where('seen', 0)])
             ->get();
+
+
         $favChats = Auth::guard('doctor')->user()->favoriteChats()
-        ->with([ 'user' => fn($q) => $q->select('id', 'name' , 'image')
-         , 'lastMessage' ,
-          'messages' => fn($q) => $q->whereSeen(0)->select('id', 'seen')])->get();
+            ->with(['user' => fn($q) => $q->select('id', 'name', 'image'),'lastMessage'])
+            ->withCount(['messages as unread_messages_count' => fn($q) =>$q->where('seen', 0)])
+            ->get();
 
         return view('doctor.chat.index', compact('chats', 'favChats'));
     }
