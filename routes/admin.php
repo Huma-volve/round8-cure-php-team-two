@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Dashboard\AdminBookingController;
+use App\Http\Controllers\Dashboard\Admin\Booking\AdminBookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:admin'])->prefix('admin/dashboard')->name('admin.')->group(function () {

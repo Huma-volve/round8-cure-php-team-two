@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Dashboard\DoctorAppointmentDashboardController;
+use App\Http\Controllers\Dashboard\Doctor\Booking\DoctorAppointmentDashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:doctor'])->prefix('doctor/dashboard')->group(function () {

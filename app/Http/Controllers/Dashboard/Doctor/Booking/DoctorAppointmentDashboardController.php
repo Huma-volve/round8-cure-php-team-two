@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Dashboard\Doctor\Booking;
 
 use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
