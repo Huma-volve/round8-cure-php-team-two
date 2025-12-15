@@ -3,6 +3,7 @@
 namespace App\Modules\Favorites\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Modules\Home\Resources\TimeResource;
 
 class FavoriteResource extends JsonResource
 {
@@ -11,11 +12,13 @@ class FavoriteResource extends JsonResource
         return [
             'id'             => $this->id,
             'name'           => $this->name,
-            'specialty_id'   => $this->specialty_id,
+            'specialty'      => $this->specialty?->name,
             'hospital_name'  => $this->hospital_name,
-            'price'          => $this->price,
+            'price'          => number_format($this->price, 2),
             'exp_years'      => $this->exp_years,
-            'image'          => $this->image,
+            'image'          => $this->image ? asset('storage/' . $this->image) : null,
+            'rating'         => round($this->average_rating ?? 0, 1),
+            'times'          => TimeResource::collection($this->times),
             'is_favorite'    => true,
         ];
     }
