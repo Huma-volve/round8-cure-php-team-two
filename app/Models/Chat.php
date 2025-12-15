@@ -36,4 +36,13 @@ class Chat extends Model
     {
         return $this->belongsToMany(User::class, 'favorite_chats');
     }
+
+    public function favoriteByDoctors()
+    {
+        return $this->belongsToMany(Doctor::class, 'favorite_chats');
+    }
+    public function lastMessage()
+    {
+        return $this->hasOne(Message::class)->whereType('text')->latest();
+    }
 }
