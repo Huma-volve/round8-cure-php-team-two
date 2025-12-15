@@ -45,10 +45,10 @@ require __DIR__ . '/admin.php';
 
 
         // ================================= Doctor Chat =================================================//
+        Route::controller(ChatController::class)->group(function () {
+            Route::get('/chats', 'index')->name('chats.index');
+            Route::get('/chats/{id}', 'showChatMessages')->name('chat.messages.show');
+        });
 
         // ================================= End Doctor Chat =================================================//
-    });
-    Route::controller(ChatController::class)->group(function () {
-        Route::get('/chats', 'index')->name('chats.index');
-        Route::get('/chats/{id}', 'show');
     });
