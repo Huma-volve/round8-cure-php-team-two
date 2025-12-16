@@ -30,6 +30,7 @@ class ChatController extends Controller
             ->chats()->with(['messages', 'user' => fn($q) => $q->select('id', 'name', 'image')])
             ->findOrFail($id);
 
+            $chat->messages()->where('seen', 0)->update(['seen' => 1]);
         if (!$chat) {
             return response()->json(['message' => 'Chat not found'], 404);
         }

@@ -10,10 +10,11 @@ class Message extends Model
     protected $table = 'messages';
     protected $fillable = [
         'chat_id',
-        'user_id',
         'content',
         'type',
         'seen',
+        'sender_type',
+        'sender_id',
     ];
 
 
