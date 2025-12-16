@@ -78,7 +78,7 @@ class AuthController extends Controller
         $data = $request->validated();
         $result = $this->authOtpService->verifyOtp($data['user_id'], $data['otp']);
         $statusCode = $result['status'] ? 200 : ($result['message'] === 'User not found.' ? 404 : 400);
-        return apiResponse($result['status'], $result['message'], $result['data'] ?? null, $statusCode);
+        return apiResponse($result['status'], $result['message'], $result['data']  ?? null, $statusCode);
     }
 
 

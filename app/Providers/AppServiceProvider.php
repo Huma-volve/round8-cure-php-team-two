@@ -3,22 +3,22 @@
 namespace App\Providers;
 
 use App\Models\Chat;
-use App\Policies\Chats\ChatPolicy;
+use App\Models\Doctor;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
 
 
-    protected $listen = [
-        \App\Events\SendMessageEvent::class => [
-            \App\Listeners\SendMessageNotificationListener::class,
-        ],
-    ];
+//    protected $listen = [
+//        \App\Events\SendMessageEvent::class => [
+////            \App\Listeners\SendMessageNotificationListener::class,
+//        ],
+//    ];
 
-    protected $policies = [
-        Chat::class => ChatPolicy::class,
-    ];
+
 
     public function register(): void
     {
@@ -30,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::morphMap([
+            'user'   => User::class,
+            'doctor' => Doctor::class,
+        ]);
     }
 }
