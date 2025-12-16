@@ -86,5 +86,21 @@ class Doctor extends Authenticatable
     {
         return $this->favoritedByUsers()->where('user_id', $user->id)->exists();
     }
+    public function favoriteChats()
+    {
+        return $this->belongsToMany(Chat::class, 'favorite_chats');
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(
+            User::class,
+            'favorites',
+            'doctor_id',
+            'user_id'
+        );
+    }
+
+
 
 }

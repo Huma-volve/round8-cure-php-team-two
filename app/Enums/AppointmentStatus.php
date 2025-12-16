@@ -8,4 +8,6 @@ enum AppointmentStatus: string
     case Paid           = 'paid';
     case Cancelled      = 'cancelled';
     case Completed      = 'completed';
+
+    case Confirmed = 'confirmed';
 }

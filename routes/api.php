@@ -17,13 +17,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::prefix('auth')->group(function () {
+Route::prefix('v1/auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/otp/resend', [AuthController::class, 'resendOtp']); 
+    Route::post('/otp/resend', [AuthController::class, 'resendOtp']);
     Route::post('/otp/verify', [AuthController::class, 'verifyOtp']);
 
     //Google OAuth Routes
@@ -46,7 +46,7 @@ Route::middleware(('auth:sanctum'))->group(function () {
 });
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
     Route::get('/notifications', [NotificationController::class, 'index']);
 
@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 
-Route::prefix("reviews")->middleware("auth:sanctum")->group(function () {
+Route::prefix("v1/reviews")->middleware("auth:sanctum")->group(function () {
 
     Route::post("/add", [ReviewController::class, "store"]);
 
@@ -73,6 +73,8 @@ Route::prefix("reviews")->middleware("auth:sanctum")->group(function () {
     Route::put('/{id}/update', [ReviewController::class, 'update']);
 
     Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
+
+   Route::get('doctors/top', [ReviewController::class, 'topDoctors']);
 });
 
 
@@ -83,7 +85,6 @@ Route::prefix('v1')->group(function () {
         Route::prefix('chats')->controller(ChatController::class)->group(function () {
             Route::get('/', 'fetchUserChats');
             Route::post('/', 'createOrFetchChat');
-//            Route::get('/{id}', 'fetchChatMessages');
         });
         //============================== End Chats =================================//
         //==============================  Messages =================================//

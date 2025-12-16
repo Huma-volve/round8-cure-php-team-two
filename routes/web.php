@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::get('/', function () {
     return view('layouts.dashboard.app');
