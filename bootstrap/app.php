@@ -13,11 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-<<<<<<< Updated upstream
         $middleware->api(prepend: [\Illuminate\Http\Middleware\HandleCors::class]);
-=======
-       $middleware->api(prepend: [\Illuminate\Http\Middleware\HandleCors::class]);
->>>>>>> Stashed changes
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
