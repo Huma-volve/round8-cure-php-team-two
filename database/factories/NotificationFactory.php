@@ -25,7 +25,7 @@ class NotificationFactory extends Factory
                 'App\\Notifications\\NewMessageNotification'
             ]),
             'notifiable_type' => 'App\\Models\\User',
-            'notifiable_id' => $this->faker->numberBetween(1, 10),
+            'notifiable_id' => "141",
             'data' => [
                 'title' => $this->faker->sentence(),
                 'message' => $this->faker->sentence(),
