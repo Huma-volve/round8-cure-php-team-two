@@ -40,7 +40,9 @@ class AuthenticatedSessionController extends Controller
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             }
         }
-        //dd("got it");
+
+        // dd("got it");
+
 
         if (\App\Models\Doctor::where('email', $email)->exists()) {
              if (Auth::guard('doctor')->attempt(['email' => $email, 'password' => $password], $remember)) {

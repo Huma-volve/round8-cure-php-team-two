@@ -73,6 +73,8 @@ Route::prefix("v1/reviews")->middleware("auth:sanctum")->group(function () {
     Route::put('/{id}/update', [ReviewController::class, 'update']);
 
     Route::get('/doctor/{doctor_id}', [ReviewController::class, 'get_reviews_to_doctor']);
+
+   Route::get('doctors/top', [ReviewController::class, 'topDoctors']);
 });
 
 
