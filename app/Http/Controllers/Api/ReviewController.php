@@ -1,12 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use app\Helpers\apiResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Review\StoreReviewRequest;
 use App\Http\Requests\Review\UpdateReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Appointment;
+use App\Models\Doctor;
 use App\Models\Review;
 use Auth;
 use Illuminate\Http\Request;
@@ -20,7 +20,7 @@ class ReviewController extends Controller
         $appointment = Appointment::findOrFail($request->appointment_id);
         $appointmentDateTime = Carbon::parse($appointment['appointment_date'] . ' ' . $appointment['appointment_time']);
         if ($appointment->user_id != Auth()->id()) {
-            return apiResponse(400, "You are not authorized to view this appointment.");
+            return apiResponse(403, "You are not authorized to view this appointment.");
         }
 
         if (!$appointmentDateTime->isPast()) {
@@ -34,7 +34,7 @@ class ReviewController extends Controller
         }
         $review = Review::create([
             'appointment_id' => $request->appointment_id,
-            'doctor_id' => $request->doctor_id,
+            'doctor_id' => $appointment->doctor_id,
             'rating' => $request->rating,
             'comment' => $request->comment,
             'user_id' => Auth()->id()
@@ -50,12 +50,12 @@ class ReviewController extends Controller
 
         $review = Review::findOrFail($id);
 
-
+        if ($review->user_id != Auth()->id()) {
+            return apiResponse(403, "You are not authorized to Edite this review");
+        }
         $review->fill($request->validated());
         $review->save();
-        if ($review->user_id != Auth()->id()) {
-            return apiResponse(400, "You are not authorized to Edite this review");
-        }
+
 
         return apiResponse(200, "Review updated successfully.", new ReviewResource($review));
     }
@@ -65,7 +65,7 @@ class ReviewController extends Controller
         $review = Review::with('doctor', 'user')->find($id);
 
         if (!$review) {
-            return apiResponse(404, 'Review not found', );
+            return apiResponse(404, 'Review not found');
         }
 
         return apiResponse(200, 'Review retrieved successfully', new ReviewResource($review));
@@ -77,6 +77,9 @@ class ReviewController extends Controller
         if (!$review) {
             return apiResponse(404, "Review not found");
 
+        }
+        if ($review->user_id !== Auth()->id()) {
+            return apiResponse(403, 'Unauthorized');
         }
 
         $review->delete();
@@ -91,10 +94,10 @@ class ReviewController extends Controller
     {
         $reviews = Review::with('user')
             ->where('doctor_id', $doctor_id)
-            ->paginate(10); 
+            ->paginate(10);
 
 
-        if ($reviews->isEmpty()) {
+        if ($reviews->total() === 0) {
 
             return apiResponse(404, 'No reviews found for this doctor');
         }
@@ -102,6 +105,15 @@ class ReviewController extends Controller
         return apiResponse(200, 'Reviews retrieved successfully', ReviewResource::Collection($reviews));
 
     }
+    public function topDoctors()
+    {
+        // dd(123);
+        $doctors = Doctor::withAvg('reviews', 'rating')->withCount('reviews')
+        ->having('reviews_count', '>=', 1)
+            ->orderByDesc('reviews_avg_rating')
+            ->orderByDesc('reviews_count')->take(10)
+            ->get();
+        return apiResponse(200, 'Top Doctors', $doctors);
 
-
+    }
 }
