@@ -25,24 +25,25 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        
+
         // $request->authenticate();
         $request->ensureIsNotRateLimited();
-        
+
         $email = $request->email;
         $password = $request->password;
         $remember = $request->boolean('remember');
-        
-        
+
+
         if (\App\Models\Admin::where('email', $email)->exists()) {
             if (Auth::guard('admin')->attempt(['email' => $email, 'password' => $password], $remember)) {
                 $request->session()->regenerate();
                 return redirect()->intended(route('admin.dashboard', absolute: false));
             }
         }
+
         // dd("got it");
 
-        
+
         if (\App\Models\Doctor::where('email', $email)->exists()) {
              if (Auth::guard('doctor')->attempt(['email' => $email, 'password' => $password], $remember)) {
                  $request->session()->regenerate();
@@ -55,7 +56,7 @@ class AuthenticatedSessionController extends Controller
         throw \Illuminate\Validation\ValidationException::withMessages([
             'email' => trans('auth.failed'),
         ]);
-        
+
     }
 
     /**
