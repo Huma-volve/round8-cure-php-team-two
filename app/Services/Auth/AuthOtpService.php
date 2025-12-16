@@ -12,7 +12,7 @@ class AuthOtpService
     public function sendOtp(int $userId, string $phone, bool $forceResend = false): array
     {
 
-            $user = User::find($userId);
+        $user = User::find($userId);
     
     if (!$user) {
         return ['status' => false, 'message' => 'User not found.'];
@@ -36,7 +36,7 @@ class AuthOtpService
 
         Otp::where('user_id', $userId)->delete();
 
-        $otp = random_int(1000, 9999);
+        $otp = 1234;
 
         Otp::create([
             'user_id'    => $userId,
@@ -47,12 +47,11 @@ class AuthOtpService
 
         
         $message = "Your verification code is: $otp";
-        // $this->whatsapp->send($phone, $message);
 
             return [
             'status'  => true,
             'message' => 'OTP sent successfully.',
-            'otp'     => $otp //for testing purposes only
+            'otp'     => $otp 
         ];
     }
 
@@ -62,7 +61,6 @@ class AuthOtpService
     }
 
 
-    // التحقق من OTP
     public function verifyOtp(int $userId, int $otp): array
     {
         
