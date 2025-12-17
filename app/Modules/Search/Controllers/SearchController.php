@@ -23,6 +23,14 @@ class SearchController extends Controller
 
         $doctors = $this->repository->getAllDoctors();
 
+        if ($doctors->isEmpty()) {
+            return apiResponse(
+                true,
+                'No doctors found',
+                []
+            );
+        }
+
         return apiResponse(
             true,
             'All doctors loaded successfully',
@@ -30,14 +38,22 @@ class SearchController extends Controller
         );
     }
 
-
     public function search(SearchRequest $request)
     {
         $user = $this->getUser($request);
 
         $keyword = $request->input('content');
         $this->repository->saveSearchHistory($user->id, $keyword);
+
         $doctors = $this->repository->searchDoctors($keyword);
+
+        if ($doctors->isEmpty()) {
+            return apiResponse(
+                true,
+                'No doctors match your search',
+                []
+            );
+        }
 
         return apiResponse(
             true,
@@ -49,7 +65,16 @@ class SearchController extends Controller
     public function history(Request $request)
     {
         $user = $this->getUser($request);
+
         $history = $this->repository->getUserHistory($user->id);
+
+        if ($history->isEmpty()) {
+            return apiResponse(
+                true,
+                'Search history is empty',
+                []
+            );
+        }
 
         return apiResponse(
             true,
@@ -65,7 +90,7 @@ class SearchController extends Controller
 
         return apiResponse(
             true,
-            'Search history cleared'
+            'Search history cleared successfully'
         );
     }
 }
