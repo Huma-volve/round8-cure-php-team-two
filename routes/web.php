@@ -9,7 +9,6 @@ use App\Http\Controllers\Doctor\DoctorDashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', function () {
     return view('layouts.dashboard.app');
 });
@@ -25,6 +24,8 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+require __DIR__ . '/doctors.php';
+require __DIR__ . '/admin.php';
 
 // Admin Dashboard Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -41,7 +42,7 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
     Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
     Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
     Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
-    
+
 });
 
 Route::middleware(['auth', 'role:doctor'])->group(function () {
@@ -70,3 +71,5 @@ Route::controller(ChatController::class)->group(function () {
 });
 
 // ================================= End Doctor Chat =================================================//
+
+
