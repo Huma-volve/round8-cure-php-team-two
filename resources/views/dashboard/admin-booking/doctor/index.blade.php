@@ -9,10 +9,7 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold">Manage Doctors</h3>
-                        <a href="{{ route('admin.doctor.create') }}"
-                            class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Create Doctor
-                        </a>
+
                     </div>
 
                     @if (session('status'))
@@ -87,6 +84,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <a href="{{ route('admin.doctor.create') }}" class="bg-primary text-white font-bold py-3 my-3 px-4 rounded">
+                        Create Doctor
+                    </a>
                 </div>
             </div>
         </div>
