@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminDashboardController;
 use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
 
 use App\Http\Controllers\DoctorController;
@@ -29,11 +30,8 @@ require __DIR__ . '/admin.php';
 
 // Admin Dashboard Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    Route::get('/doctor/create', [App\Http\Controllers\AdminController::class, 'createDoctor'])->name('doctor.create');
-    Route::get('/doctor', [App\Http\Controllers\AdminController::class, 'listDoctors'])->name('doctor.index');
-    Route::delete('/doctor/destroy/{doctor}', [App\Http\Controllers\AdminController::class, 'deleteDoctor'])->name('doctor.destroy');
-    Route::post('/doctor/store', [App\Http\Controllers\AdminController::class, 'storeDoctor'])->name('doctor.store');
+    // Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
+    
 });
 
 // Doctor Dashboard Routes
@@ -45,9 +43,16 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
 
 });
 
-Route::middleware(['auth', 'role:doctor'])->group(function () {
-    Route::get('/doctor/dashboard', [DoctorDashboardController::class, 'index'])
-        ->name('doctor.dashboard');
+
+Route::middleware(['auth:doctor'])->group(function () {
+    Route::get('/doctor/dashboard/reports', [DoctorDashboardController::class, 'index'])
+        ->name('doctor.dashboard.reports');
+});
+
+
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/dashboard/reports', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard.reports');
 });
 
 
