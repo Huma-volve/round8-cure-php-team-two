@@ -295,7 +295,9 @@
                 <!-- ------------------------------- -->
                 <!-- start notification Dropdown -->
                 <!-- ------------------------------- -->
-                <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
+
+                @include("layouts.dashboard.include.notification")
+                {{-- <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
                     <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
                         <i class="ti ti-bell-ringing"></i>
                         <div class="notification bg-primary rounded-circle"></div>
@@ -372,7 +374,7 @@
                             <button class="btn btn-outline-primary w-100">See All Notifications</button>
                         </div>
                     </div>
-                </li>
+                </li> --}}
                 <!-- ------------------------------- -->
                 <!-- end notification Dropdown -->
                 <!-- ------------------------------- -->
