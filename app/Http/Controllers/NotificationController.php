@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\NotificationResource;
 use App\Models\Doctor;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,16 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
-        $notifications = $user->notifications()->latest()->paginate(10);
+        $doctor = Auth::user();
+        $notifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id])
+            ->latest()->get();
 
-        return NotificationResource::collection($notifications);
+
+        return response()->json([
+            'count' => $notifications->count(),
+            'data' => NotificationResource::collection($notifications),
+        ]);
+
     }
 
     /**
@@ -24,11 +31,17 @@ class NotificationController extends Controller
      */
     public function unread()
     {
-        $user = Auth::user();
-        $unreadNotifications = $user->unreadNotifications()->latest()->paginate(10);
+        $doctor = Auth::user();
+        $unreadNotifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id,
+        "read_at"=>null])
+            ->latest()->get();
 
 
-        return NotificationResource::collection($unreadNotifications);
+        return response()->json([
+            'count' => $unreadNotifications->count(),
+            'data' => NotificationResource::collection($unreadNotifications),
+        ]);
+
 
     }
 
@@ -38,7 +51,7 @@ class NotificationController extends Controller
     public function markAsRead($id)
     {
         $user = Auth::user();
-        $notification = $user->notifications()->where('id', $id)->first();
+        $notification = Notification::where('id', $id)->first();
 
         if (!$notification) {
             return redirect()
@@ -46,7 +59,10 @@ class NotificationController extends Controller
                 ->with('error', 'Notification not found');
         }
 
-        $notification->markAsRead();
+        $notification->read_at=now();
+        $notification->save();
+
+       
         return redirect()
             ->back()
             ->with('success', 'Notification marked as read');
@@ -59,9 +75,8 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
-        $user = Auth::user();
-        $notification = $user->notifications()->where('id', $id)->first();
-
+        $doctor = Auth::user();
+        $notification = Notification::where('id', $id)->first();
         if (!$notification) {
             return redirect()
                 ->back()
@@ -69,6 +84,7 @@ class NotificationController extends Controller
         }
 
         $notification->delete();
+        $notification->save();
 
         return redirect()
             ->back()
@@ -80,8 +96,10 @@ class NotificationController extends Controller
      */
     public function destroyAll()
     {
-        $user = Auth::user();
-        $user->notifications()->delete();
+        $doctor = Auth::user();
+        $notification=Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id])
+            ->latest()->get();
+        $notification->delete();
         return redirect()
             ->back()
             ->with('success', 'All notifications deleted');
@@ -95,15 +113,18 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        $user = Auth::user();
+        $doctor = Auth::user();
 
-        $user->unreadNotifications->markAsRead();
+        $Notifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id,
+        "read_at"=>null])->latest()->get();
+
+        $Notifications->read_at=now();
 
         return redirect()
             ->back()
             ->with('success', 'All unread notifications marked as read');
     }
-    
+
 
 
 

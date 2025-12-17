@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
+
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Doctor\DoctorDashboardController;
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 // Admin Dashboard Routes
 Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -47,3 +51,22 @@ Route::middleware(['auth', 'role:doctor'])->group(function () {
 
 
 
+Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/unreadnotifications', [NotificationController::class, 'unread'])->name('notifications.unread');
+    Route::get('/markAsReadnotifications/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::get('/markAllAsReadnotifications/{id}', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::get('/destroyAll', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
+
+    Route::get("/patientdetails/{id}",[DoctorController::class,"patientdetails"]);
+
+});
+
+// ================================= Doctor Chat =================================================//
+Route::controller(ChatController::class)->group(function () {
+    Route::get('/chats', 'index')->name('chats.index');
+    Route::get('/chats/{id}', 'showChatMessages')->name('chat.messages.show');
+});
+
+// ================================= End Doctor Chat =================================================//

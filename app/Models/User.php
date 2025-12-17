@@ -12,7 +12,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable,HasApiTokens , HasRoles;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
     protected $fillable = [
         'name',
         'email',
@@ -25,6 +25,8 @@ class User extends Authenticatable
         'bir_of_date',
         'gender',
     ];
+
+
 
     protected $hidden = [
         'password',
@@ -40,6 +42,10 @@ class User extends Authenticatable
         ];
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'user_id');
+    }
 
     public function chats()
     {
