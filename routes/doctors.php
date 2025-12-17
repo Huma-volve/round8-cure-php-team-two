@@ -8,4 +8,6 @@ Route::middleware(['auth:doctor'])->prefix('doctor/dashboard')->group(function (
     Route::post('/appointments/{appointment}/cancel', [DoctorAppointmentDashboardController::class, 'cancel'])->name('doctor.appointments.cancel');
     Route::post('/appointments/{appointment}/reschedule', [DoctorAppointmentDashboardController::class, 'reschedule'])->name('doctor.appointments.reschedule');
     Route::post('/appointments/{appointment}/status', [DoctorAppointmentDashboardController::class, 'updateStatus'])->name('doctor.appointments.status');
+    Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
+    Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
 });

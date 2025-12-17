@@ -35,7 +35,7 @@
 
                         <td>
                         <span class="badge bg-secondary">
-                            {{ ucfirst(str_replace('_',' ', $appointment->status->value)) }}
+                            {{ ucfirst(str_replace('_', ' ', $appointment->status->value)) }}
                         </span>
                         </td>
 

@@ -11,6 +11,11 @@
             </a>
         </li>
     </ul>
+{{-- @if(Auth::guard('admin')->check())
+        
+    @elseif(Auth::guard('doctor')->check())
+        
+    @endif --}}
 
     <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
         <!-- ------------------------------- -->
@@ -213,6 +218,17 @@
         <li class="nav-item dropdown-hover d-none d-lg-block">
             <a class="nav-link" href="../main/app-email.html">Email</a>
         </li>
+        @if(Auth::guard('admin')->check())
+        
+        <li class="nav-item dropdown-hover d-none d-lg-block">
+            <a class="nav-link" href="{{route('admin.doctor.index')}}">Docotrs</a>
+        </li>
+        @elseif(Auth::guard('doctor')->check())
+        <li class="nav-item dropdown-hover d-none d-lg-block">
+            <a class="nav-link" href="" >test</a>
+        </li>
+        
+    @endif
     </ul>
 
     <div class="d-block d-lg-none py-4">

@@ -1,4 +1,5 @@
-@extends('admin.dashboard')
+@extends('layouts.dashboard.app')
+
 @section('content')
 
 
@@ -25,31 +26,31 @@
                         <thead>
                             <tr>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-auto py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Name
                                 </th>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-auto py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Email
                                 </th>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-auto py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Specialty
                                 </th>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-auto py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Phone
                                 </th>
                                 <th
-                                    class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-auto py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                                     Actions
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($doctors as $doctor)
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <tr class="py-2">
+                                <td class="py-2 border-gray-200 bg-white text-sm">
                                     <div class="flex items-center">
                                         <div class="ml-3">
                                             <p class="text-gray-900 whitespace-no-wrap">
@@ -58,16 +59,16 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class=" border-b  bg-white text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ $doctor->email }}</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class=" border-b  bg-white text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ $doctor->specialty->name }}</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class=" border-b  bg-white text-sm">
                                     <p class="text-gray-900 whitespace-no-wrap">{{ $doctor->phone }}</p>
                                 </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                <td class="border-b bg-white text-sm">
 
                                     <form action="{{ route('admin.doctor.destroy', $doctor->id) }}" method="POST">
                                         @csrf 
@@ -76,7 +77,7 @@
 
                                         <button 
                                             type="submit" 
-                                            class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                            class="btn btn-danger text-white font-bold py-2 px-4 rounded"
                                             >
                                             Delete
                                         </button>
