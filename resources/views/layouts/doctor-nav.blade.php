@@ -1,4 +1,3 @@
-
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,6 +27,31 @@
                     </x-nav-link>
                 </div>
             </div>
+            <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
+                <i class="ti ti-bell-ringing"></i>
+                <div class="notification bg-primary rounded-circle" id="notify-dot"></div>
+            </a>
+
+            <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+
+                <div class="d-flex align-items-center justify-content-between py-3 px-7">
+                    <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
+                    <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm" id="notify-count">
+                        0
+                    </span>
+                </div>
+
+                <div class="message-body" data-simplebar id="notifications-list">
+                    <!-- notifications will be injected here -->
+                </div>
+
+                <div class="py-6 px-7 mb-1">
+                    <a href="/notifications" class="btn btn-outline-primary w-100">
+                        See All Notifications
+                    </a>
+                </div>
+            </div>
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -57,7 +81,8 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
-                            <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
+                            <x-dropdown-link :href="route('logout')"
+                                onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
@@ -71,10 +96,10 @@
                 <button @click="open = ! open"
                     class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
+                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
+                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
                             stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
@@ -83,7 +108,7 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
@@ -106,7 +131,8 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
+                    <x-responsive-nav-link :href="route('logout')"
+                        onclick="event.preventDefault();
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
@@ -115,3 +141,65 @@
         </div>
     </div>
 </nav>
+<script src="https://js.pusher.com/8.0/pusher.min.js"></script>
+<script src="{{ asset('js/app.js') }}"></script> <!-- Laravel Echo -->
+
+<script>
+let loaded = false;
+let notificationsList = document.getElementById('notifications-list');
+let notifyCount = document.getElementById('notify-count');
+
+// تحميل الإشعارات عند المرور على Dropdown
+document.getElementById('drop2').addEventListener('mouseenter', function () {
+    if (loaded) return;
+    loaded = true;
+
+    fetch("{{ route('doctor.notifications.index') }}")
+        .then(res => res.json())
+        .then(response => renderNotifications(response.data, response.count));
+});
+
+// دالة لعرض الإشعارات
+function renderNotifications(notifications, count) {
+    notifyCount.innerText = count;
+    notificationsList.innerHTML = '';
+
+    if (notifications.length === 0) {
+        notificationsList.innerHTML = `<div class="text-center py-4 text-muted">No notifications</div>`;
+        return;
+    }
+
+    notifications.forEach(notification => {
+        notificationsList.innerHTML += `
+          <div class="py-6 px-7 d-flex align-items-center dropdown-item ${notification.read_at ? 'text-muted' : 'text-dark'}">
+            <span class="me-3">
+              <i class="ti ti-info-circle text-primary fs-6"></i>
+            </span>
+            <div class="w-100">
+              <h6 class="mb-1 fw-semibold lh-base">
+                ${notification.data.title ?? 'Notification'}
+              </h6>
+              <span class="fs-2 d-block text-body-secondary">
+                ${notification.data.message ?? ''}
+              </span>
+            </div>
+          </div>
+        `;
+    });
+}
+
+// Laravel Echo + Pusher لتحديث الإشعارات في الوقت الحقيقي
+Echo.private(`App.Models.User.${{{ auth()->id() }}}`)
+    .notification((notification) => {
+        let currentCount = parseInt(notifyCount.innerText);
+        renderNotifications([notification, ...Array.from(notificationsList.children).map(item => ({
+            id: item.dataset.id,
+            data: {
+                title: item.querySelector('h6').innerText,
+                message: item.querySelector('span').innerText
+            },
+            read_at: null
+        }))], currentCount + 1);
+    });
+</script>
+

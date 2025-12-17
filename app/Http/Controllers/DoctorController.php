@@ -29,10 +29,10 @@ class DoctorController extends Controller
     public function updateProfile(Request $request)
     {
         $doctor = Auth::guard('doctor')->user(); // Get the authenticated doctor model
-        
+
         // Since $doctor is an instance of the model, verify it works as intended.
         // We might need to ensure it's treated as a Doctor model instance for validation unique ignore.
-        
+
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('doctors')->ignore($doctor->id)],
@@ -49,12 +49,29 @@ class DoctorController extends Controller
 
         return redirect()->route('doctor.dashboard')->with('status', 'Profile updated successfully!');
     }
-    
+
     // Placeholder for appointment modification
-    public function updateAppointmentStatus(Request $request, $id) {
-         $appointment = Appointment::where('doctor_id', Auth::guard('doctor')->id())->findOrFail($id);
-         $appointment->status = $request->status; // Expecting status input
-         $appointment->save();
-         return back()->with('status', 'Appointment status updated!');
+    public function updateAppointmentStatus(Request $request, $id)
+    {
+        $appointment = Appointment::where('doctor_id', Auth::guard('doctor')->id())->findOrFail($id);
+        $appointment->status = $request->status; // Expecting status input
+        $appointment->save();
+        return back()->with('status', 'Appointment status updated!');
     }
+
+   public function patientdetails($id)
+{
+   
+    $appointment = Appointment::with('user')->findOrFail($id);
+
+    $user = $appointment->user;
+
+   
+    $appointments = $user->appointments()->orderBy('appointment_date', 'desc')->get();
+
+    return view('dashboard.doctor-booking.PatientDetails.index', compact('user', 'appointments'));
+}
+
+
+
 }

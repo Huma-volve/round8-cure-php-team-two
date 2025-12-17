@@ -546,7 +546,7 @@
                         <!-- ------------------------------- -->
                         <!-- start notification Dropdown -->
                         <!-- ------------------------------- -->
-                        <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
+                        {{-- <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
                             <a class="nav-link position-relative" href="javascript:void(0)" id="drop2"
                                 aria-expanded="false">
                                 <i class="ti ti-bell-ringing"></i>
@@ -632,7 +632,7 @@
                                     <button class="btn btn-outline-primary w-100">See All Notifications</button>
                                 </div>
                             </div>
-                        </li>
+                        </li> --}}
                         <!-- ------------------------------- -->
                         <!-- end notification Dropdown -->
                         <!-- ------------------------------- -->
