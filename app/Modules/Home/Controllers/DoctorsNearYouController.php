@@ -45,10 +45,21 @@ class DoctorsNearYouController extends Controller
 
         $doctors = $this->homeService->getDoctorsNearYou($perPage, $lat, $lng);
 
+        if ($doctors->isEmpty()) {
+            return apiResponse(
+                true,
+                'No doctors found near your location',
+                []
+            );
+        }
+
         return apiResponse(
             true,
-            "Doctors near you loaded successfully",
+            'Doctors near you loaded successfully',
             new DoctorCollection($doctors)
         );
     }
+
 }
+
+
