@@ -4,7 +4,6 @@ use App\Http\Controllers\Dashboard\Admin\Booking\AdminBookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:admin'])->prefix('admin/dashboard')->name('admin.')->group(function () {
-    Route::get('/', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
     Route::get('/bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
     Route::get('/bookings/{appointment}', [AdminBookingController::class, 'show'])->name('bookings.show');
     Route::get('/doctor/create', [App\Http\Controllers\AdminController::class, 'createDoctor'])->name('doctor.create');

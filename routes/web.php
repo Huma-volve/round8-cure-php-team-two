@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\admin\AdminDashboardController;
 use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
 
 use App\Http\Controllers\DoctorController;
@@ -41,6 +42,16 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     // Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
     // Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
 
+// Doctor Dashboard Routes -> (reports)
+Route::middleware(['auth:doctor'])->group(function () {
+    Route::get('/doctor/dashboard/reports', [DoctorDashboardController::class, 'index'])
+        ->name('doctor.dashboard.reports');
+});
+// Admin Dashboard Routes -> (reports)
+Route::middleware(['auth:admin'])->group(function () {
+    Route::get('/admin/dashboard/reports', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard.reports');
+});
 
 
 
