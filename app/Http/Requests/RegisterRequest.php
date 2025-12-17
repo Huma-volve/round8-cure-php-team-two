@@ -22,11 +22,21 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:15|unique:users,phone',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'name' => 'required|string|min:3|max:30|regex:/^(?=.*[a-zA-Z])[a-zA-Z\s]+$/',
+            'phone' => 'required|string|max:15|unique:users,phone|regex:/^\+?[0-9]{7,15}$/',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|max:32|confirmed',
 
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+        'name'  => trim($this->input('name')),
+        'email' => strtolower(trim($this->input('email'))),
+        'phone' => trim($this->input('phone')),
+        ]);
+    }
+
 }

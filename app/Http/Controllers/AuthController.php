@@ -78,7 +78,7 @@ class AuthController extends Controller
         $data = $request->validated();
         $result = $this->authOtpService->verifyOtp($data['user_id'], $data['otp']);
         $statusCode = $result['status'] ? 200 : ($result['message'] === 'User not found.' ? 404 : 400);
-        return apiResponse($result['status'], $result['message'], $result['data'] ?? null, $statusCode);
+        return apiResponse($result['status'], $result['message'], $result['data']  ?? null, $statusCode);
     }
 
 
@@ -92,7 +92,7 @@ class AuthController extends Controller
             return apiResponse(false, 'User not found.', null, 404);
         }
         $otpResult = $this->authOtpService->sendOtp($user->id, $user->phone);
-        return apiResponse(true, 'OTP sent to your WhatsApp for password reset.', ['otp' => $otpResult['otp'] ?? null], 200);
+        return apiResponse(true, 'OTP sent to your WhatsApp for password reset.', ['otp' => $otpResult ], 200);
     }
 
 
