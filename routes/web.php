@@ -1,9 +1,15 @@
 <?php
 
 use App\Http\Controllers\Dashboard\Doctor\Chat\ChatController;
+
+use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\Doctor\DoctorDashboardController;
+
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+require __DIR__ . '/auth.php';
 
 Route::get('/', function () {
     return view('layouts.dashboard.app');
@@ -30,10 +36,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
 // Doctor Dashboard Routes
 Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\DoctorController::class, 'dashboard'])->name('dashboard');
+});
     // Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
     // Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
     // Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
-});
 
 
 require __DIR__ . '/doctors.php';
@@ -41,10 +47,10 @@ require __DIR__ . '/admin.php';
 
 
 
-        // ================================= Doctor Chat =================================================//
-        Route::controller(ChatController::class)->group(function () {
-            Route::get('/chats', 'index')->name('chats.index');
-            Route::get('/chats/{id}', 'showChatMessages')->name('chat.messages.show');
-        });
+// ================================= Doctor Chat =================================================//
+Route::controller(ChatController::class)->group(function () {
+    Route::get('/chats', 'index')->name('chats.index');
+    Route::get('/chats/{id}', 'showChatMessages')->name('chat.messages.show');
+});
 
-        // ================================= End Doctor Chat =================================================//
+// ================================= End Doctor Chat =================================================//

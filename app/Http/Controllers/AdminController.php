@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Doctor;
 use App\Models\User;
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreDoctorRequest;
 use Illuminate\Support\Facades\Hash;
@@ -11,11 +12,17 @@ use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 {
-    // public function dashboard()
-    // {
+    public function dashboard()
+    {
+        $summary = [
+            'total_doctors' => Doctor::count(),
+            'total_users' => User::count(),
+            'total_appointments' => Appointment::count(),
+            // 'total_users' => User::count(),
+        ];
+        return view('dashboard.admin-booking.summary',compact('summary'));
         
-    //     return view('admin.dashboard');
-    // }
+    }
     public function listDoctors()
     {
         $doctors = Doctor::all();
