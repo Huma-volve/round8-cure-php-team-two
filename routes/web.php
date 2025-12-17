@@ -62,7 +62,7 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
     Route::get('/all', [NotificationController::class, 'All'])->name('notifications.all');
 
     
-    Route::get("/patientdetails/{id}",[DoctorController::class,"patientdetails"]);
+    Route::get("/patientdetails/{id}",[DoctorController::class,"patientdetails"]) ->name('patientdetails');
 
 });
 
