@@ -12,17 +12,11 @@ use Illuminate\Validation\Rules;
 
 class AdminController extends Controller
 {
-    public function dashboard()
-    {
-        $summary = [
-            'total_doctors' => Doctor::count(),
-            'total_users' => User::count(),
-            'total_appointments' => Appointment::count(),
-            // 'total_users' => User::count(),
-        ];
-        return view('dashboard.admin-booking.summary',compact('summary'));
+    // public function dashboard()
+    // {
         
-    }
+    //     return view('admin.dashboard');
+    // }
     public function listDoctors()
     {
         $doctors = Doctor::all();

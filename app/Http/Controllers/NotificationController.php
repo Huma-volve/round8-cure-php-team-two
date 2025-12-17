@@ -8,17 +8,21 @@ use App\Models\Doctor;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationController extends Controller
 {
     public function index()
     {
-        $doctor = Auth::user();
-        $notifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id])
-            ->latest()->get();
+        $user = Auth::guard('doctor')->user();
+        $notifications = DatabaseNotification::where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->latest()
+            ->paginate(5);
 
 
+        // return view("layouts.dashboard.include.notification")->with(['count' => $notifications->count(),
+        // 'data' => NotificationResource::collection($notifications)]);
         return response()->json([
             'count' => $notifications->count(),
             'data' => NotificationResource::collection($notifications),
@@ -26,15 +30,28 @@ class NotificationController extends Controller
 
     }
 
+    public function all()
+    {
+        $user = Auth::guard('doctor')->user();
+
+        $notifications = DatabaseNotification::where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->latest()
+            ->paginate(10);
+
+        return view("dashboard.doctor-booking.notifications.index", compact('notifications'));
+    }
+
     /**
      * عرض الإشعارات غير المقروءة فقط
      */
     public function unread()
     {
-        $doctor = Auth::user();
-        $unreadNotifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id,
-        "read_at"=>null])
-            ->latest()->get();
+        $user = Auth::user();
+        $unreadNotifications = DatabaseNotification::where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))->wherenull('read_at')
+            ->latest()
+            ->paginate(10);
 
 
         return response()->json([
@@ -51,7 +68,10 @@ class NotificationController extends Controller
     public function markAsRead($id)
     {
         $user = Auth::user();
-        $notification = Notification::where('id', $id)->first();
+        $notification = DatabaseNotification::where('id', $id)
+            ->where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->first();
 
         if (!$notification) {
             return redirect()
@@ -59,10 +79,10 @@ class NotificationController extends Controller
                 ->with('error', 'Notification not found');
         }
 
-        $notification->read_at=now();
+        $notification->read_at = now();
         $notification->save();
 
-       
+
         return redirect()
             ->back()
             ->with('success', 'Notification marked as read');
@@ -75,8 +95,11 @@ class NotificationController extends Controller
      */
     public function destroy($id)
     {
-        $doctor = Auth::user();
-        $notification = Notification::where('id', $id)->first();
+        $user = Auth::user();
+        $notification = DatabaseNotification::where('id', $id)
+            ->where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->first();
         if (!$notification) {
             return redirect()
                 ->back()
@@ -96,9 +119,11 @@ class NotificationController extends Controller
      */
     public function destroyAll()
     {
-        $doctor = Auth::user();
-        $notification=Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id])
-            ->latest()->get();
+        $user = Auth::user();
+        $notification = DatabaseNotification::where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->get();
+
         $notification->delete();
         return redirect()
             ->back()
@@ -113,13 +138,12 @@ class NotificationController extends Controller
      */
     public function markAllAsRead()
     {
-        $doctor = Auth::user();
+        $user = Auth::user();
+        $notification = DatabaseNotification::where('notifiable_id', $user->id)
+            ->where('notifiable_type', get_class($user))
+            ->first();
 
-        $Notifications = Notification::where(["notifiable_type" => "App\Models\Doctor", "notifiable_id" => $doctor->id,
-        "read_at"=>null])->latest()->get();
-
-        $Notifications->read_at=now();
-
+        $notification->markAsRead();
         return redirect()
             ->back()
             ->with('success', 'All unread notifications marked as read');
