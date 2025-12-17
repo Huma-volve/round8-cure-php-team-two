@@ -59,18 +59,18 @@ class DoctorController extends Controller
         return back()->with('status', 'Appointment status updated!');
     }
 
-   public function patientdetails($id)
-{
-   
-    $appointment = Appointment::with('user')->findOrFail($id);
+    public function patientdetails($id)
+    {
 
-    $user = $appointment->user;
+        $appointment = Appointment::with('user')->findOrFail($id);
 
-   
-    $appointments = $user->appointments()->orderBy('appointment_date', 'desc')->get();
+        $user = $appointment->user;
 
-    return view('dashboard.doctor-booking.PatientDetails.index', compact('user', 'appointments'));
-}
+
+        $appointments = $user->appointments()->orderBy('appointment_date', 'desc')->get();
+
+        return view('dashboard.doctor-booking.PatientDetails.index', compact('user', 'appointments'));
+    }
 
 
 
