@@ -60,6 +60,7 @@ class NotificationController extends Controller
         }
 
         $notification->markAsRead();
+
         return apiResponse(200, "Notification marked as read");
 
 
@@ -80,7 +81,6 @@ class NotificationController extends Controller
         }
 
         $notification->delete();
-        dd($notification);
 
         return apiResponse(200, "Notification deleted");
     }
@@ -93,9 +93,9 @@ class NotificationController extends Controller
         $user = Auth::user();
         $notification = DatabaseNotification::where('notifiable_id', $user->id)
             ->where('notifiable_type', get_class($user))
-            ->get();
+            ->delete();
 
-        $notification->delete();
+    
         return apiResponse(200, "All Notification deleted");
 
 
@@ -108,12 +108,11 @@ class NotificationController extends Controller
     public function markAllAsRead()
     {
         $user = Auth::user();
-          $notification = DatabaseNotification::where('notifiable_id', $user->id)
-            ->where('notifiable_type', get_class($user))
-            ->first();
-
-        $notification->markAsRead();
-
+      DatabaseNotification::where('notifiable_id', Auth::id())
+    ->where('notifiable_type', get_class(Auth::user()))
+    ->whereNull('read_at')
+    ->update(['read_at' => now()]);
+      
         return response()->json([
             'status' => 200,
             'message' => 'All unread notifications marked as read'
