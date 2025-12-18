@@ -120,11 +120,11 @@ class NotificationController extends Controller
     public function destroyAll()
     {
         $user = Auth::user();
-        $notification = DatabaseNotification::where('notifiable_id', $user->id)
+        DatabaseNotification::where('notifiable_id', $user->id)
             ->where('notifiable_type', get_class($user))
-            ->get();
+            ->delete();
 
-        $notification->delete();
+
         return redirect()
             ->back()
             ->with('success', 'All notifications deleted');
@@ -141,9 +141,10 @@ class NotificationController extends Controller
         $user = Auth::user();
         $notification = DatabaseNotification::where('notifiable_id', $user->id)
             ->where('notifiable_type', get_class($user))
-            ->first();
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
 
-        $notification->markAsRead();
+       
         return redirect()
             ->back()
             ->with('success', 'All unread notifications marked as read');
