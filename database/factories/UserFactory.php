@@ -27,8 +27,18 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= 'password',
             'remember_token' => Str::random(10),
+            'phone' => fake()->phoneNumber(),
+            'image' => $this->faker->imageUrl(),
+            'status' => true,
+            'provider_id' => null,
+            'location' => [
+                'lat' => fake()->latitude(),
+                'lng' => fake()->longitude(),
+            ],
+            'bir_of_date' => fake()->date(),
+            'gender' => fake()->randomElement(['male', 'female']),
         ];
     }
 

@@ -2,13 +2,24 @@
 
 namespace App\Providers;
 
+use App\Models\Chat;
+use App\Models\Doctor;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+
+
+//    protected $listen = [
+//        \App\Events\SendMessageEvent::class => [
+////            \App\Listeners\SendMessageNotificationListener::class,
+//        ],
+//    ];
+
+
+
     public function register(): void
     {
         //
@@ -19,6 +30,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::morphMap([
+            'user'   => User::class,
+            'doctor' => Doctor::class,
+        ]);
     }
 }
