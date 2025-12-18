@@ -12,9 +12,9 @@
         </li>
     </ul>
 {{-- @if(Auth::guard('admin')->check())
-        
+
     @elseif(Auth::guard('doctor')->check())
-        
+
     @endif --}}
 
     <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
@@ -219,15 +219,26 @@
             <a class="nav-link" href="../main/app-email.html">Email</a>
         </li>
         @if(Auth::guard('admin')->check())
-        
+
         <li class="nav-item dropdown-hover d-none d-lg-block">
             <a class="nav-link" href="{{route('admin.doctor.index')}}">Docotrs</a>
         </li>
+            <li class="nav-item dropdown-hover d-none d-lg-block">
+                <a class="nav-link" href="{{route('admin.bookings.index')}}">bookings</a>
+            </li>
+            <li class="nav-item dropdown-hover d-none d-lg-block">
+                <a class="nav-link" href="{{route('admin.dashboard.reports')}}">reports</a>
+            </li>
         @elseif(Auth::guard('doctor')->check())
         <li class="nav-item dropdown-hover d-none d-lg-block">
             <a class="nav-link" href="" >test</a>
         </li>
-        
+            <li class="nav-item dropdown-hover d-none d-lg-block">
+                <a class="nav-link" href="{{route('doctor.dashboard.appointments')}}" >appointments</a>
+            </li>
+            <li class="nav-item dropdown-hover d-none d-lg-block">
+                <a class="nav-link" href="{{route('doctor.dashboard.reports')}}" >reports</a>
+            </li>
     @endif
     </ul>
 
