@@ -1,10 +1,10 @@
 <?php
 
 namespace Database\Seeders;
+use Illuminate\Notifications\DatabaseNotification;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Notification;
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             DoctorSeeder::class,
             NotificationSeeder::class,
             RoleSeeder::class,
+            NotificationSeeder::class,
             DoctorTimeSeeder::class,
             AdminSeeder::class,
         ]);
