@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "Bash(npm run css-lint)",
+      "Bash(npm run build:*)",
+      "Bash(npm install)",
+      "Bash(npm run:*)",
+      "Bash(npm test:*)",
+      "Bash(npm install:*)",
+      "Bash(npm start)",
+      "WebFetch(domain:adminlte.io)",
+      "Bash(rm:*)",
+      "Bash(find:*)",
+      "Bash(sed:*)",
+      "Bash(gh pr list:*)",
+      "Bash(npm audit:*)",
+      "Bash(npm outdated)",
+      "Bash(npm update:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git tag:*)",
+      "Bash(gh release create:*)",
+      "Bash(npm publish:*)"
+    ],
+    "deny": []
+  }
+}
