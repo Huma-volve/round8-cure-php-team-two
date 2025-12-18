@@ -31,30 +31,6 @@ require __DIR__ . '/doctors.php';
 require __DIR__ . '/admin.php';
 
 
-// Admin Dashboard Routes
-Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('dashboard');
-    
-});
-
-
-    // Route::get('/profile', [App\Http\Controllers\DoctorController::class, 'editProfile'])->name('profile.edit');
-    // Route::patch('/profile', [App\Http\Controllers\DoctorController::class, 'updateProfile'])->name('profile.update');
-    // Route::patch('/appointment/{id}', [App\Http\Controllers\DoctorController::class, 'updateAppointmentStatus'])->name('appointment.update');
-
-// Doctor Dashboard Routes -> (reports)
-Route::middleware(['auth:doctor'])->group(function () {
-    Route::get('/doctor/dashboard/reports', [DoctorDashboardController::class, 'index'])
-        ->name('doctor.dashboard.reports');
-});
-// Admin Dashboard Routes -> (reports)
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard/reports', [AdminDashboardController::class, 'index'])
-        ->name('admin.dashboard.reports');
-});
-
-
-
 Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/unreadnotifications', [NotificationController::class, 'unread'])->name('notifications.unread');
@@ -64,7 +40,7 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
     Route::delete('/destroyAll', [NotificationController::class, 'destroyAll'])->name('notifications.destroyAll');
     Route::get('/all', [NotificationController::class, 'All'])->name('notifications.all');
 
-    
+
     Route::get("/patientdetails/{id}",[DoctorController::class,"patientdetails"]) ->name('patientdetails');
 
 });
