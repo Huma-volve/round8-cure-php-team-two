@@ -344,279 +344,279 @@
     </div>
 @endsection
 
-@push('js')
-    <script>
-        $(document).ready(function () {
-            // CSRF Token Setup
-            $.ajaxSetup({
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-            });
+{{--@push('js')--}}
+{{--    <script>--}}
+{{--        $(document).ready(function () {--}}
+{{--            // CSRF Token Setup--}}
+{{--            $.ajaxSetup({--}}
+{{--                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}--}}
+{{--            });--}}
 
-            // Scroll to bottom of messages
-            function scrollToBottom() {
-                const box = $('#messages-wrapper');
-                if (box.length) {
-                    box.animate({scrollTop: box[0].scrollHeight}, 300);
-                }
-            }
+{{--            // Scroll to bottom of messages--}}
+{{--            function scrollToBottom() {--}}
+{{--                const box = $('#messages-wrapper');--}}
+{{--                if (box.length) {--}}
+{{--                    box.animate({scrollTop: box[0].scrollHeight}, 300);--}}
+{{--                }--}}
+{{--            }--}}
 
-            // Append message to chat
-            function appendMessage(msg, user) {
-                // Handle undefined or null message
-                if (!msg || !msg.sender_type || !msg.content) {
-                    console.warn('Invalid message:', msg);
-                    return;
-                }
+{{--            // Append message to chat--}}
+{{--            function appendMessage(msg, user) {--}}
+{{--                // Handle undefined or null message--}}
+{{--                if (!msg || !msg.sender_type || !msg.content) {--}}
+{{--                    console.warn('Invalid message:', msg);--}}
+{{--                    return;--}}
+{{--                }--}}
 
-                const isMe = (msg.sender_type === 'doctor' ||
-                    msg.sender_type.includes('Doctor') ||
-                    msg.sender_type.toLowerCase() === 'doctor');
-                const align = isMe ? 'justify-content-end' : 'justify-content-start';
-                const bg = isMe ? 'bg-primary-subtle' : 'bg-light';
+{{--                const isMe = (msg.sender_type === 'doctor' ||--}}
+{{--                    msg.sender_type.includes('Doctor') ||--}}
+{{--                    msg.sender_type.toLowerCase() === 'doctor');--}}
+{{--                const align = isMe ? 'justify-content-end' : 'justify-content-start';--}}
+{{--                const bg = isMe ? 'bg-primary-subtle' : 'bg-light';--}}
 
-                // Handle time formatting
-                let time = 'Now';
-                try {
-                    if (msg.created_at) {
-                        time = new Date(msg.created_at).toLocaleTimeString('ar-EG', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            hour12: true
-                        });
-                    }
-                } catch (e) {
-                    console.warn('Error formatting time:', e);
-                }
+{{--                // Handle time formatting--}}
+{{--                let time = 'Now';--}}
+{{--                try {--}}
+{{--                    if (msg.created_at) {--}}
+{{--                        time = new Date(msg.created_at).toLocaleTimeString('ar-EG', {--}}
+{{--                            hour: '2-digit',--}}
+{{--                            minute: '2-digit',--}}
+{{--                            hour12: true--}}
+{{--                        });--}}
+{{--                    }--}}
+{{--                } catch (e) {--}}
+{{--                    console.warn('Error formatting time:', e);--}}
+{{--                }--}}
 
-                let content = '';
-                if (msg.type === 'text') {
-                    // إزالة أي HTML وعرض النص بشكل صحيح
-                    const cleanText = String(msg.content).replace(/<[^>]*>/g, '');
-                    content = `<div class="${bg}" style="display: inline-block;">${cleanText}</div>`;
-                } else if (msg.type === 'image') {
-                    content = `<div class="p-1 d-inline-block"><img src="${msg.content}" width="250" class="rounded" alt="Image" onclick="window.open('${msg.content}', '_blank')"></div>`;
-                } else {
-                    // Handle other types or default to text
-                    const cleanText = String(msg.content).replace(/<[^>]*>/g, '');
-                    content = `<div class="${bg}" style="display: inline-block;">${cleanText}</div>`;
-                }
+{{--                let content = '';--}}
+{{--                if (msg.type === 'text') {--}}
+{{--                    // إزالة أي HTML وعرض النص بشكل صحيح--}}
+{{--                    const cleanText = String(msg.content).replace(/<[^>]*>/g, '');--}}
+{{--                    content = `<div class="${bg}" style="display: inline-block;">${cleanText}</div>`;--}}
+{{--                } else if (msg.type === 'image') {--}}
+{{--                    content = `<div class="p-1 d-inline-block"><img src="${msg.content}" width="250" class="rounded" alt="Image" onclick="window.open('${msg.content}', '_blank')"></div>`;--}}
+{{--                } else {--}}
+{{--                    // Handle other types or default to text--}}
+{{--                    const cleanText = String(msg.content).replace(/<[^>]*>/g, '');--}}
+{{--                    content = `<div class="${bg}" style="display: inline-block;">${cleanText}</div>`;--}}
+{{--                }--}}
 
-                // User image - only show for received messages
-                const userImage = (!isMe && user && user.image)
-                    ? `<img src="${user.image}" width="40" height="40" class="rounded-circle" alt="User">`
-                    : '';
+{{--                // User image - only show for received messages--}}
+{{--                const userImage = (!isMe && user && user.image)--}}
+{{--                    ? `<img src="${user.image}" width="40" height="40" class="rounded-circle" alt="User">`--}}
+{{--                    : '';--}}
 
-                const html = `
-                <div class="hstack gap-3 align-items-start mb-3 ${align}">
-                    ${userImage}
-                    <div style="max-width: 70%;">
-                        ${content}
-                        <div class="d-block text-muted ${isMe ? 'text-end' : ''}" style="font-size: 0.75rem; margin-top: 4px;">${time}</div>
-                    </div>
-                </div>`;
+{{--                const html = `--}}
+{{--                <div class="hstack gap-3 align-items-start mb-3 ${align}">--}}
+{{--                    ${userImage}--}}
+{{--                    <div style="max-width: 70%;">--}}
+{{--                        ${content}--}}
+{{--                        <div class="d-block text-muted ${isMe ? 'text-end' : ''}" style="font-size: 0.75rem; margin-top: 4px;">${time}</div>--}}
+{{--                    </div>--}}
+{{--                </div>`;--}}
 
-                $('#messages-wrapper').append(html);
-            }
+{{--                $('#messages-wrapper').append(html);--}}
+{{--            }--}}
 
-            // Escape HTML to prevent XSS
-            function escapeHtml(text) {
-                const map = {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                };
-                return text.replace(/[&<>"']/g, m => map[m]);
-            }
+{{--            // Escape HTML to prevent XSS--}}
+{{--            function escapeHtml(text) {--}}
+{{--                const map = {--}}
+{{--                    '&': '&amp;',--}}
+{{--                    '<': '&lt;',--}}
+{{--                    '>': '&gt;',--}}
+{{--                    '"': '&quot;',--}}
+{{--                    "'": '&#039;'--}}
+{{--                };--}}
+{{--                return text.replace(/[&<>"']/g, m => map[m]);--}}
+{{--            }--}}
 
-            // Open chat conversation
-            $(document).on('click', '.click_chat', function () {
-                const chatId = $(this).data('chat-id');
-                const userName = $(this).find('.chat-title').text().trim();
+{{--            // Open chat conversation--}}
+{{--            $(document).on('click', '.click_chat', function () {--}}
+{{--                const chatId = $(this).data('chat-id');--}}
+{{--                const userName = $(this).find('.chat-title').text().trim();--}}
 
-                // Update UI
-                $('.click_chat').removeClass('active-chat');
-                $(this).addClass('active-chat');
+{{--                // Update UI--}}
+{{--                $('.click_chat').removeClass('active-chat');--}}
+{{--                $(this).addClass('active-chat');--}}
 
-                $('#chat_image_box').addClass('d-none');
-                $('#chat_box_view').removeClass('d-none').addClass('d-flex');
-                $('#chat-id').val(chatId);
-                $('#active-chat-username').text(userName);
+{{--                $('#chat_image_box').addClass('d-none');--}}
+{{--                $('#chat_box_view').removeClass('d-none').addClass('d-flex');--}}
+{{--                $('#chat-id').val(chatId);--}}
+{{--                $('#active-chat-username').text(userName);--}}
 
-                // Show loading
-                $('#messages-wrapper').html(
-                    '<div class="d-flex align-items-center justify-content-center h-100">' +
-                    '<div class="spinner-border text-primary"></div>' +
-                    '</div>'
-                );
+{{--                // Show loading--}}
+{{--                $('#messages-wrapper').html(--}}
+{{--                    '<div class="d-flex align-items-center justify-content-center h-100">' +--}}
+{{--                    '<div class="spinner-border text-primary"></div>' +--}}
+{{--                    '</div>'--}}
+{{--                );--}}
 
-                // Fetch messages with better error handling
-                $.ajax({
-                    url: `{{ route('doctor.chat.index') }}/${chatId}/messages`,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (res) {
-                        console.log('Messages response:', res); // Debug log
-                        $('#messages-wrapper').empty();
+{{--                // Fetch messages with better error handling--}}
+{{--                $.ajax({--}}
+{{--                    url: `{{ route('doctor.chat.index') }}/${chatId}/messages`,--}}
+{{--                    type: 'GET',--}}
+{{--                    dataType: 'json',--}}
+{{--                    success: function (res) {--}}
+{{--                        console.log('Messages response:', res); // Debug log--}}
+{{--                        $('#messages-wrapper').empty();--}}
 
-                        // Handle different response structures
-                        let messages = [];
-                        let user = null;
+{{--                        // Handle different response structures--}}
+{{--                        let messages = [];--}}
+{{--                        let user = null;--}}
 
-                        if (res.data) {
-                            messages = res.data.messages || res.data;
-                            user = res.data.user;
-                        } else if (Array.isArray(res)) {
-                            messages = res;
-                        } else if (res.messages) {
-                            messages = res.messages;
-                            user = res.user;
-                        }
+{{--                        if (res.data) {--}}
+{{--                            messages = res.data.messages || res.data;--}}
+{{--                            user = res.data.user;--}}
+{{--                        } else if (Array.isArray(res)) {--}}
+{{--                            messages = res;--}}
+{{--                        } else if (res.messages) {--}}
+{{--                            messages = res.messages;--}}
+{{--                            user = res.user;--}}
+{{--                        }--}}
 
-                        if (messages && messages.length > 0) {
-                            messages.forEach(msg => appendMessage(msg, user));
-                            scrollToBottom();
-                        } else {
-                            $('#messages-wrapper').html(
-                                '<div class="text-center text-muted mt-5">' +
-                                '<i class="ti ti-message-off fs-1 mb-3"></i><br>' +
-                                'No messages yet. Start the conversation!' +
-                                '</div>'
-                            );
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Error loading messages:', xhr.responseText); // Debug log
-                        $('#messages-wrapper').html(
-                            '<div class="text-center text-danger mt-5">' +
-                            '<i class="ti ti-alert-circle fs-1 mb-3"></i><br>' +
-                            'Failed to load messages<br>' +
-                            '<small>' + (xhr.responseJSON?.message || error) + '</small>' +
-                            '</div>'
-                        );
-                    }
-                });
-            });
+{{--                        if (messages && messages.length > 0) {--}}
+{{--                            messages.forEach(msg => appendMessage(msg, user));--}}
+{{--                            scrollToBottom();--}}
+{{--                        } else {--}}
+{{--                            $('#messages-wrapper').html(--}}
+{{--                                '<div class="text-center text-muted mt-5">' +--}}
+{{--                                '<i class="ti ti-message-off fs-1 mb-3"></i><br>' +--}}
+{{--                                'No messages yet. Start the conversation!' +--}}
+{{--                                '</div>'--}}
+{{--                            );--}}
+{{--                        }--}}
+{{--                    },--}}
+{{--                    error: function(xhr, status, error) {--}}
+{{--                        console.error('Error loading messages:', xhr.responseText); // Debug log--}}
+{{--                        $('#messages-wrapper').html(--}}
+{{--                            '<div class="text-center text-danger mt-5">' +--}}
+{{--                            '<i class="ti ti-alert-circle fs-1 mb-3"></i><br>' +--}}
+{{--                            'Failed to load messages<br>' +--}}
+{{--                            '<small>' + (xhr.responseJSON?.message || error) + '</small>' +--}}
+{{--                            '</div>'--}}
+{{--                        );--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            });--}}
 
-            // Send message
-            $('#message-form').on('submit', function (e) {
-                e.preventDefault();
+{{--            // Send message--}}
+{{--            $('#message-form').on('submit', function (e) {--}}
+{{--                e.preventDefault();--}}
 
-                const chatId = $('#chat-id').val();
-                const messageText = $('#message-input').val().trim();
-                const imageFile = $('#message-image')[0].files.length;
+{{--                const chatId = $('#chat-id').val();--}}
+{{--                const messageText = $('#message-input').val().trim();--}}
+{{--                const imageFile = $('#message-image')[0].files.length;--}}
 
-                if (!messageText && !imageFile) return;
+{{--                if (!messageText && !imageFile) return;--}}
 
-                const formData = new FormData(this);
-                const $submitBtn = $(this).find('button[type="submit"]');
-                $submitBtn.prop('disabled', true);
+{{--                const formData = new FormData(this);--}}
+{{--                const $submitBtn = $(this).find('button[type="submit"]');--}}
+{{--                $submitBtn.prop('disabled', true);--}}
 
-                $.ajax({
-                    url: `{{ route('doctor.chat.index') }}/${chatId}/message`,
-                    type: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (res) {
-                        if (res.data) {
-                            appendMessage(res.data, null);
+{{--                $.ajax({--}}
+{{--                    url: `{{ route('doctor.chat.index') }}/${chatId}/message`,--}}
+{{--                    type: "POST",--}}
+{{--                    data: formData,--}}
+{{--                    processData: false,--}}
+{{--                    contentType: false,--}}
+{{--                    success: function (res) {--}}
+{{--                        if (res.data) {--}}
+{{--                            appendMessage(res.data, null);--}}
 
-                            // Update sidebar preview
-                            const previewText = res.data.type === 'text'
-                                ? res.data.content
-                                : '📷 Image';
-                            $(`#chat_${chatId} .text-truncate`).text(previewText);
+{{--                            // Update sidebar preview--}}
+{{--                            const previewText = res.data.type === 'text'--}}
+{{--                                ? res.data.content--}}
+{{--                                : '📷 Image';--}}
+{{--                            $(`#chat_${chatId} .text-truncate`).text(previewText);--}}
 
-                            // Reset form
-                            $('#message-input').val('');
-                            $('#message-image').val('');
-                            $('#file-preview-area').empty();
-                            $('#message-type').val('text');
+{{--                            // Reset form--}}
+{{--                            $('#message-input').val('');--}}
+{{--                            $('#message-image').val('');--}}
+{{--                            $('#file-preview-area').empty();--}}
+{{--                            $('#message-type').val('text');--}}
 
-                            scrollToBottom();
-                        }
-                    },
-                    error: function() {
-                        alert('Failed to send message. Please try again.');
-                    },
-                    complete: function() {
-                        $submitBtn.prop('disabled', false);
-                    }
-                });
-            });
+{{--                            scrollToBottom();--}}
+{{--                        }--}}
+{{--                    },--}}
+{{--                    error: function() {--}}
+{{--                        alert('Failed to send message. Please try again.');--}}
+{{--                    },--}}
+{{--                    complete: function() {--}}
+{{--                        $submitBtn.prop('disabled', false);--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            });--}}
 
-            // Toggle favorite
-            $(document).on('click', '.favorite-chat-btn', function (e) {
-                e.preventDefault();
-                e.stopPropagation();
+{{--            // Toggle favorite--}}
+{{--            $(document).on('click', '.favorite-chat-btn', function (e) {--}}
+{{--                e.preventDefault();--}}
+{{--                e.stopPropagation();--}}
 
-                const $btn = $(this);
-                const chatId = $btn.data('chat-id');
-                const isFav = $btn.hasClass('is-favorite') ||
-                    $btn.find('i').hasClass('ti-star-filled') ||
-                    $btn.find('i').hasClass('ti-trash');
+{{--                const $btn = $(this);--}}
+{{--                const chatId = $btn.data('chat-id');--}}
+{{--                const isFav = $btn.hasClass('is-favorite') ||--}}
+{{--                    $btn.find('i').hasClass('ti-star-filled') ||--}}
+{{--                    $btn.find('i').hasClass('ti-trash');--}}
 
-                const url = isFav
-                    ? "{{ route('doctor.chat.favorite.remove') }}"
-                    : "{{ route('doctor.chat.favorite.add') }}";
+{{--                const url = isFav--}}
+{{--                    ? "{{ route('doctor.chat.favorite.remove') }}"--}}
+{{--                    : "{{ route('doctor.chat.favorite.add') }}";--}}
 
-                $.post(url, {chat_id: chatId}, function (res) {
-                    if (!isFav) {
-                        // Add to favorites
-                        $btn.addClass('is-favorite text-warning')
-                            .find('i')
-                            .removeClass('ti-star')
-                            .addClass('ti-star-filled');
+{{--                $.post(url, {chat_id: chatId}, function (res) {--}}
+{{--                    if (!isFav) {--}}
+{{--                        // Add to favorites--}}
+{{--                        $btn.addClass('is-favorite text-warning')--}}
+{{--                            .find('i')--}}
+{{--                            .removeClass('ti-star')--}}
+{{--                            .addClass('ti-star-filled');--}}
 
-                        // Reload to update favorites sidebar
-                        setTimeout(() => location.reload(), 300);
-                    } else {
-                        // Remove from favorites
-                        $(`li[data-fav-chat-id="${chatId}"]`).fadeOut(300);
-                        $(`#chat_${chatId}`)
-                            .find('.favorite-chat-btn')
-                            .removeClass('is-favorite text-warning')
-                            .find('i')
-                            .removeClass('ti-star-filled')
-                            .addClass('ti-star');
-                    }
-                }).fail(function() {
-                    alert('Failed to update favorite status');
-                });
-            });
+{{--                        // Reload to update favorites sidebar--}}
+{{--                        setTimeout(() => location.reload(), 300);--}}
+{{--                    } else {--}}
+{{--                        // Remove from favorites--}}
+{{--                        $(`li[data-fav-chat-id="${chatId}"]`).fadeOut(300);--}}
+{{--                        $(`#chat_${chatId}`)--}}
+{{--                            .find('.favorite-chat-btn')--}}
+{{--                            .removeClass('is-favorite text-warning')--}}
+{{--                            .find('i')--}}
+{{--                            .removeClass('ti-star-filled')--}}
+{{--                            .addClass('ti-star');--}}
+{{--                    }--}}
+{{--                }).fail(function() {--}}
+{{--                    alert('Failed to update favorite status');--}}
+{{--                });--}}
+{{--            });--}}
 
-            // Image upload button
-            $('#image-btn').on('click', function() {
-                $('#message-image').click();
-            });
+{{--            // Image upload button--}}
+{{--            $('#image-btn').on('click', function() {--}}
+{{--                $('#message-image').click();--}}
+{{--            });--}}
 
-            // Image file selection
-            $('#message-image').on('change', function () {
-                const file = this.files[0];
-                if (file) {
-                    // Validate file size (max 5MB)
-                    if (file.size > 5 * 1024 * 1024) {
-                        alert('File size must be less than 5MB');
-                        $(this).val('');
-                        return;
-                    }
+{{--            // Image file selection--}}
+{{--            $('#message-image').on('change', function () {--}}
+{{--                const file = this.files[0];--}}
+{{--                if (file) {--}}
+{{--                    // Validate file size (max 5MB)--}}
+{{--                    if (file.size > 5 * 1024 * 1024) {--}}
+{{--                        alert('File size must be less than 5MB');--}}
+{{--                        $(this).val('');--}}
+{{--                        return;--}}
+{{--                    }--}}
 
-                    $('#message-type').val('image');
-                    $('#file-preview-area').html(
-                        `<i class="ti ti-photo"></i> Selected: <strong>${file.name}</strong>`
-                    );
-                } else {
-                    $('#message-type').val('text');
-                    $('#file-preview-area').empty();
-                }
-            });
+{{--                    $('#message-type').val('image');--}}
+{{--                    $('#file-preview-area').html(--}}
+{{--                        `<i class="ti ti-photo"></i> Selected: <strong>${file.name}</strong>`--}}
+{{--                    );--}}
+{{--                } else {--}}
+{{--                    $('#message-type').val('text');--}}
+{{--                    $('#file-preview-area').empty();--}}
+{{--                }--}}
+{{--            });--}}
 
-            // Auto-focus on message input when chat is opened
-            $(document).on('click', '.click_chat', function() {
-                setTimeout(() => $('#message-input').focus(), 500);
-            });
-        });
-    </script>
-@endpush
+{{--            // Auto-focus on message input when chat is opened--}}
+{{--            $(document).on('click', '.click_chat', function() {--}}
+{{--                setTimeout(() => $('#message-input').focus(), 500);--}}
+{{--            });--}}
+{{--        });--}}
+{{--    </script>--}}
+{{--@endpush--}}

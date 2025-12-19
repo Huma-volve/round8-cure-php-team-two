@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
-    return view('layouts.dashboard.app');
+    return view('layouts.admin.app');
 });
 
 Route::get('/dashboard', function () {
@@ -43,7 +43,6 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
 
     Route::get("/patientdetails/{id}",[DoctorController::class,"patientdetails"]) ->name('patientdetails');
 
-});
 
 
 // ================================= Doctor Chat =================================================//
@@ -53,5 +52,6 @@ Route::controller(ChatController::class)->group(function () {
 });
 
 // ================================= End Doctor Chat =================================================//
+});
 
 
