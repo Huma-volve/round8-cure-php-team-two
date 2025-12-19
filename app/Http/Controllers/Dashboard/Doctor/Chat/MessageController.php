@@ -3,39 +3,42 @@
 namespace App\Http\Controllers\Dashboard\Doctor\Chat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Chat\SendMessageRequest;
-use App\Models\Chat;
-use App\Models\Message;
-use App\Utils\ImageManagement;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Doctor;
 
 class MessageController extends Controller
 {
-    public function store(SendMessageRequest $request, $id)
+    public function store(Request $request, $id)
     {
-        $doctor = Auth::guard('doctor')->user();
-
-        // Use route parameter $id (chat id) to find the chat belonging to the doctor
-        $chat = $doctor->chats()->findOrFail($id);
-
-        $data = $request->validated();
-
-        // Create message with all required fields at once
-        $message = $chat->messages()->create([
-            'type' => $data['type'],
-            'sender_type' => 'App\\Models\\Doctor',
-            'sender_id' => $doctor->id,
-            'content' => $data['type'] === 'text' ? $data['content'] : null,
+        // التحقق من البيانات
+        $request->validate([
+            'content' => 'required_if:type,text',
+            'type' => 'required|in:text,image,audio,video',
         ]);
 
-        // Handle file uploads for non-text messages (ImageManagement itself checks for file)
-        if ($data['type'] !== 'text') {
-            ImageManagement::uploadImage($request, $message);
-            $message->refresh();
+        $doctor = Auth::guard('doctor')->user();
+        $chat = $doctor->chats()->findOrFail($id);
+        $content = $request->content;
+
+        // معالجة رفع الملفات (صور، فيديو، صوت)
+        if ($request->type !== 'text' && $request->hasFile('content')) {
+            $file = $request->file('content');
+            $path = $file->store('chat_attachments', 'public');
+            $content = asset('storage/' . $path);
         }
 
-        // Update last message timestamp
+        // إنشاء الرسالة
+        $message = $chat->messages()->create([
+            'chat_id' => $chat->id,
+            'type' => $request->type,
+            'sender_type' => Doctor::class, // التخزين باسم الكلاس الصحيح
+            'sender_id' => $doctor->id,
+            'content' => $content,
+            'seen' => 0
+        ]);
+
+        // تحديث توقيت المحادثة
         $chat->update(['last_message_at' => now()]);
 
         return response()->json([
@@ -44,26 +47,10 @@ class MessageController extends Controller
                 'id' => $message->id,
                 'type' => $message->type,
                 'content' => $message->content,
-                'sender_type' => 'doctor',
+                'sender_type' => 'doctor', // إرسال doctor صريحة للـ JS
                 'created_at' => $message->created_at,
                 'formatted_time' => $message->created_at->format('d-m H:i'),
             ],
         ], 201);
-    }
-
-    public function markAsRead(Request $request, $chatId)
-    {
-        $doctor = Auth::guard('doctor')->user();
-        $chat = $doctor->chats()->findOrFail($chatId);
-
-        $updated = $chat->messages()
-            ->where('sender_type', '!=', 'App\Models\Doctor')
-            ->where('seen', 0)
-            ->update(['seen' => 1]);
-
-        return response()->json([
-            'success' => true,
-            'marked_count' => $updated
-        ]);
     }
 }

@@ -47,11 +47,12 @@ Route::middleware(['auth:doctor'])->prefix('doctor')->name('doctor.')->group(fun
 //});
 
 
-Route::prefix('chat')->name('chat.')->group(function () {
+Route::prefix('chat')->middleware('auth:doctor')->name('doctor.chat.')->group(function () {
     Route::get('/', [ChatController::class, 'index'])->name('index');
     Route::get('/{id}/messages', [ChatController::class, 'showChatMessages'])->name('messages.show');
-    Route::post('/{id}/mark-read', [MessageController::class, 'markAsRead'])->name('messages.mark-read');
     Route::post('/{id}/message', [MessageController::class, 'store'])->name('messages.store');
+
+    // Favorites
     Route::post('/favorite/add', [FavoriteChatController::class, 'AddToFavorite'])->name('favorite.add');
     Route::post('/favorite/remove', [FavoriteChatController::class, 'removeFromFavorite'])->name('favorite.remove');
 });

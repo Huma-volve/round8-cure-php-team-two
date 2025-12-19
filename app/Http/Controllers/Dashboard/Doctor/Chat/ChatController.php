@@ -3,22 +3,27 @@
 namespace App\Http\Controllers\Dashboard\Doctor\Chat;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Doctor;
 
 class ChatController extends Controller
 {
     public function index()
     {
-        $chats = Auth::guard('doctor')->user()
-            ->chats()->with(['lastMessage', 'messages', 'user' => fn($q) => $q->select('id', 'name', 'image')])
-            ->withCount(['messages as unread_messages_count' => fn($q) => $q->where('seen', 0)])
+        $doctor = Auth::guard('doctor')->user();
+
+        // جلب المحادثات مع آخر رسالة وعدد الرسائل غير المقروءة
+        $chats = $doctor->chats()
+            ->with(['user', 'lastMessage'])
+            ->withCount(['messages as unread_messages_count' => fn($q) =>
+            $q->where('seen', 0)->where('sender_type', '!=', Doctor::class)
+            ])
+            ->orderByDesc('last_message_at')
             ->get();
 
-
-        $favChats = Auth::guard('doctor')->user()->favoriteChats()
-            ->with(['user' => fn($q) => $q->select('id', 'name', 'image'), 'lastMessage'])
-            ->withCount(['messages as unread_messages_count' => fn($q) => $q->where('seen', 0)])
+        // جلب المحادثات المفضلة
+        $favChats = $doctor->favoriteChats()
+            ->with(['user', 'lastMessage'])
             ->get();
 
         return view('doctor.chat.index', compact('chats', 'favChats'));
@@ -26,17 +31,32 @@ class ChatController extends Controller
 
     public function showChatMessages($id)
     {
-        $chat = Auth::guard('doctor')->user()
-            ->chats()->with(['messages', 'user' => fn($q) => $q->select('id', 'name', 'image')])
-            ->findOrFail($id);
+        $doctor = Auth::guard('doctor')->user();
+        $chat = $doctor->chats()->with('user')->findOrFail($id);
 
-            $chat->messages()->where('seen', 0)->update(['seen' => 1]);
-        if (!$chat) {
-            return response()->json(['message' => 'Chat not found'], 404);
-        }
+        // تعليم الرسائل كمقروءة
+        $chat->messages()
+            ->where('sender_type', '!=', Doctor::class)
+            ->where('seen', 0)
+            ->update(['seen' => 1]);
+
+        // تجهيز الرسائل للـ JS
+        $messages = $chat->messages()->oldest()->get()->map(function ($msg) {
+            return [
+                'id' => $msg->id,
+                'content' => $msg->content,
+                'type' => $msg->type,
+                'created_at' => $msg->created_at,
+                // تحويل اسم الكلاس الطويل إلى كلمة بسيطة للـ JS
+                'sender_type' => ($msg->sender_type === Doctor::class || $msg->sender_type == 'App\Models\Doctor') ? 'doctor' : 'user',
+            ];
+        });
 
         return response()->json([
-            'data' => $chat
+            'data' => [
+                'messages' => $messages,
+                'user' => $chat->user
+            ]
         ]);
     }
 }
