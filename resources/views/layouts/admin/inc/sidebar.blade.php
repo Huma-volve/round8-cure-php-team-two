@@ -64,6 +64,17 @@
                             </a>
                         </li>
 
+                    <li class="menu-item">
+                        <a href="{{route('admin.bookings.index')}}" class="menu-link">
+                            <div data-i18n="Without menu">bookings</div>
+                        </a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{route('admin.dashboard.reports')}}" class="menu-link">
+                            <div data-i18n="Without menu">reports</div>
+                        </a>
+                    </li>
+
                 </ul>
             </li>
 
@@ -73,13 +84,20 @@
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-blogger-line"></i>
-                    <div data-i18n="Layouts">Categories</div>
+                    <div data-i18n="Layouts">Doctor</div>
                 </a>
 
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="#" class="menu-link">
-                            <div data-i18n="Without menu">Categories</div>
+                        <a href="{{route('doctor.appointments.index')}}" class="menu-link">
+                            <div data-i18n="Without menu">Appointments</div>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="menu-sub">
+                    <li class="menu-item">
+                        <a href="{{route('doctor.dashboard.reports')}}" class="menu-link">
+                            <div data-i18n="Without menu">reports</div>
                         </a>
                     </li>
                 </ul>
