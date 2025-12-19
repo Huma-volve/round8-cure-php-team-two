@@ -46,7 +46,7 @@ class ImageManagement
 
     protected static function saveUserImage($image, $user)
     {
-        $path = self::generateImageName($request->image, 'users');
+        $path = self::generateImageName($image, 'users');
         $user->update([
             'image' => $path
         ]);
@@ -54,7 +54,7 @@ class ImageManagement
 
     protected static function saveDoctorImage($image, $doctor)
     {
-        $path = self::generateImageName($request->image, 'doctors');
+        $path = self::generateImageName($image, 'doctors');
         $doctor->update([
             'image' => $path
         ]);
@@ -62,16 +62,31 @@ class ImageManagement
 
     protected static function saveMessageType($request, $message, $defaultPath = 'chats')
     {
-        $path = match ($message->type) {
-            'image' => self::generateImageName($request->content, "$defaultPath/images"),
-            'voice' => self::generateImageName($request->content, "$defaultPath/voices"),
-            'video' => self::generateImageName($request->content, "$defaultPath/videos"),
-            'text' =>$request->content,
-        };
-        $message->update([
-            'content' => $path
-        ]);
+        if ($message->type === 'text') {
+            return; // Text messages are already saved
+        }
 
+        // Get the uploaded file
+        $file = $request->file('content');
+        
+        if (!$file) {
+            return;
+        }
+
+        $subfolder = match ($message->type) {
+            'image' => 'images',
+            'audio' => 'voices',
+            'video' => 'videos',
+            default => 'files'
+        };
+        
+        // Store file in the correct path structure
+        $path = $file->store("$defaultPath/{$message->chat_id}/$subfolder", 'public');
+        
+        // Update message with storage path
+        $message->update([
+            'content' => '/storage/' . $path
+        ]);
     }
 
 

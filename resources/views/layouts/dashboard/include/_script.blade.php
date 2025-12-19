@@ -10,7 +10,6 @@
 <!-- solar icons -->
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 <script src="{{ asset('assets') }}/libs/owl.carousel/dist/owl.carousel.min.js"></script>
-<script src="{{ asset('assets') }}/libs/apexcharts/dist/apexcharts.min.js"></script>
 <script src="{{ asset('assets') }}/js/dashboards/dashboard.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.js"
     integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="

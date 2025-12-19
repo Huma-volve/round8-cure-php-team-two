@@ -43,6 +43,12 @@ class Chat extends Model
     }
     public function lastMessage()
     {
-        return $this->hasOne(Message::class)->whereType('text')->latest();
+        // Return the latest message regardless of type
+        return $this->hasOne(Message::class)->latest();
+    }
+
+    public function getIsFavoriteAttribute()
+    {
+        return $this->favoriteByDoctors()->where('doctor_id', auth('doctor')->id())->exists();
     }
 }
