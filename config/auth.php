@@ -77,6 +77,7 @@ return [
 
         'doctors' => [
             'driver' => 'eloquent',
+            // 'model' => env('AUTH_MODEL', App\Models\Doctor::class),
             'model' => env('AUTH_MODEL', App\Models\Doctor::class),
         ],
 

@@ -3,28 +3,49 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Notification;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
-class NotificationSeeder extends Seeder 
+class NotificationSeeder extends Seeder
 {
     public function run(): void
     {
-        // إشعارات غير مقروءة
-        Notification::factory()
-            ->count(10)
-            ->unread()
-            ->create([
-                'notifiable_id' => 141,
-                'notifiable_type' => 'App\\Models\\User',
-            ]);
+        $doctorId = 3;
+        $doctorType = \App\Models\Doctor::class;
 
-        // إشعارات مقروءة
-        Notification::factory()
-            ->count(5)
-            ->read()
-            ->create([
-                'notifiable_id' => 141,
-                'notifiable_type' => 'App\\Models\\User',
+        // 🔴 إشعارات غير مقروءة
+        for ($i = 1; $i <= 10; $i++) {
+            DatabaseNotification::create([
+                'id' => (string) Str::uuid(),
+                'type' => 'App\\Notifications\\NewAppointmentNotification',
+                'notifiable_id' => $doctorId,
+                'notifiable_type' => $doctorType,
+                'data' => [
+                    'title' => 'New Appointment',
+                    'message' => 'You have a new appointment request',
+                ],
+                'read_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
+        }
+
+        // 🟢 إشعارات مقروءة
+        for ($i = 1; $i <= 5; $i++) {
+            DatabaseNotification::create([
+                'id' => (string) Str::uuid(),
+                'type' => 'App\\Notifications\\NewAppointmentNotification',
+                'notifiable_id' => $doctorId,
+                'notifiable_type' => $doctorType,
+                'data' => [
+                    'title' => 'Appointment Viewed',
+                    'message' => 'You viewed an appointment',
+                ],
+                'read_at' => now(),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

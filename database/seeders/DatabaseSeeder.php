@@ -15,9 +15,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        Notification::factory()->count(5)->read()->create();
-        Notification::factory()->count(5)->unread()->create();
-        
+     
         
         $this->call([
             UserSeeder::class,
@@ -26,6 +24,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             DoctorTimeSeeder::class,
             AdminSeeder::class,
+            NotificationSeeder::class,
         ]);
     }
 }
