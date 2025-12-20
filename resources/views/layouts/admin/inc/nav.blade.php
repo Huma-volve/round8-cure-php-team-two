@@ -14,25 +14,13 @@
             <li class="nav-item dropdown mx-3">
 
                 <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                            <sub id="notifyAdminCount" class="badge bg-danger rounded-pill text-white "></sub>
-                        <i class="icon-base ri ri-notification-line icon-md me-3"></i>
+                    
 
-                    </button>
+                
+ @auth
 
-                    <div class="dropdown-menu dropdown-menu-end p-0" style="width: 320px;">
-                        <div class="list-group list-group-flush" id="notifyAdminList">
-                                <a href="#"
-                                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                    <span>#</span>
-                                    <small class="text-muted">#</small>
-                                </a>
-                                <div id="notifyAdminListEmpty" class="list-group-item text-center text-muted">
-                                    No notifications
-                                </div>
-                        </div>
-
-                    </div>
+                    @include('layouts.admin.inc.notification')
+                @endauth
                 </div>
 
             </li>
