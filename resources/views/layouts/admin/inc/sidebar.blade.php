@@ -14,7 +14,7 @@
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
         <li class="menu-item">
-            <a href="#" class="menu-link">
+            <a href="{{route('admin.dashboard')}}" class="menu-link">
                 <i class="menu-icon icon-base ri ri-home-smile-line"></i>
                 <div data-i18n="Basic">Dashboard</div>
             </a>
@@ -43,14 +43,14 @@
                 </ul>
             </li>
 
-
+            @if(Auth::guard('admin')->check())
         {{-- Admin links --}}
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-user-2-line"></i>
                     <div data-i18n="Layouts">Admins</div>
                 </a>
-
+                
                 <ul class="menu-sub">
                     <li class="menu-item">
                         <a href="#" class="menu-link">
@@ -74,13 +74,19 @@
                             <div data-i18n="Without menu">reports</div>
                         </a>
                     </li>
+                    <li class="menu-item">
+                        <a href="{{route('admin.doctor.index')}}" class="menu-link">
+                            <div data-i18n="Without menu">Doctors</div>
+                        </a>
+                    </li>
+                    
 
                 </ul>
             </li>
 
         {{-- categories links --}}
 
-
+            @elseif(Auth::guard('doctor')->check())
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-blogger-line"></i>
@@ -96,13 +102,20 @@
                 </ul>
                 <ul class="menu-sub">
                     <li class="menu-item">
+                        <a href="{{route('doctor.times.index')}}" class="menu-link">
+                            <div data-i18n="Without menu">Doctor Times</div>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="menu-sub">
+                    <li class="menu-item">
                         <a href="{{route('doctor.dashboard.reports')}}" class="menu-link">
                             <div data-i18n="Without menu">reports</div>
                         </a>
                     </li>
                 </ul>
             </li>
-
+            @endif
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-pencil-line"></i>
@@ -200,6 +213,20 @@
                 <div data-i18n="Basic">Cards</div>
             </a>
         </li>
+
+        <form action="{{route('logout')}}" method="post">
+            
+            @csrf
+            @method('post')
+            
+            <li class="menu-item">
+                <button type="submit" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-shut-down-line"></i>
+                    <div data-i18n="Basic">Logout</div>
+                </button>
+            </li>
+        
+        </form>
 
 
     </ul>

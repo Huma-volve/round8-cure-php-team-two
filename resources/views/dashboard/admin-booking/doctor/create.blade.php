@@ -1,4 +1,4 @@
-@extends('layouts.dashboard.app')
+@extends('layouts.admin.app')
 
 @section('content')
     <div class="py-12">
@@ -7,9 +7,9 @@
                 <div class="p-6 text-gray-900">
                     <form method="POST" action="{{ route('admin.doctor.store') }}">
                         @csrf
-
+                        @method('post')
                         <!-- Name (Full Width) -->
-                        <div class="mb-4">
+                    <div class="mb-4">
                             <x-input-label for="name" :value="__('Name')" />
                             <input id="name" class="form-control block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />

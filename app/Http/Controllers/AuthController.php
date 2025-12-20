@@ -146,7 +146,24 @@ class AuthController extends Controller
         }
         return apiResponse(false, 'No authenticated user found', null, 401);
     }
+    public function set_password_page()
+    {
+        
+            return view('dashboard.doctor-booking.set-password');
+        
+    }
+    public function set_password(Request $request)
+    {
+        $request->validate([
+            'password' => ['required', 'confirmed'],
+        ]);
 
+        $doctor = $request->user();
+        $doctor->password = Hash::make($request->password);
+        $doctor->save();
+
+        return redirect()->route('doctor.dashboard')->with('status', 'Password set successfully!');
+    }
 
 
     // Delete Account function
