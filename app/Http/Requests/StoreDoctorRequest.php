@@ -30,7 +30,7 @@ class StoreDoctorRequest extends FormRequest
                 }
             }],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.Doctor::class],
-            'password' => ['required', 'confirmed'], 
+            
             'specialty_id' => ['required', 'exists:specialties,id'],
             'phone' => ['required', 'string', 'unique:'.Doctor::class, 'regex:/^01[0125][0-9]{8}$/'],
             'gender' => ['required', 'in:male,female'],

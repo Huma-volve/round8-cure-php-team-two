@@ -1,3 +1,4 @@
+
 <?php
 
 use Monolog\Handler\NullHandler;

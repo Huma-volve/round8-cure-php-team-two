@@ -1,7 +1,9 @@
-<x-guest-layout>
+    @include('layouts.admin.inc.head')
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="container my-5 mx-auto p-5 border rounded shadow" style="max-width: 400px;">
 
+    
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -33,15 +35,11 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
+            
 
-            <x-primary-button class="ms-3 bg-blue-600 hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800">
+            <x-primary-button class="ms-3 bg-primary hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-800 rounded-2 ">
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+</div>

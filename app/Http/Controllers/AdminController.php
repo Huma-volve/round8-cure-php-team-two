@@ -31,18 +31,19 @@ class AdminController extends Controller
     public function storeDoctor(StoreDoctorRequest $request)
     {
         
-
+        
         Doctor::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => Hash::make('password'),
             'specialty_id' => $request->specialty_id,
             'phone' => $request->phone,
             'gender' => $request->gender,
         ]);
-
+    
         return redirect()->route('admin.doctor.index')->with('status', 'Doctor created successfully!');
     }
+
     public function deleteDoctor(Request $request,Doctor $doctor)
     {
         
