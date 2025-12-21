@@ -1,9 +1,13 @@
 <li class="nav-item dropdown" id="drop2">
     <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
         <i class="ti ti-bell-ringing fs-5"></i>
-        <span id="notify-count" class="badge bg-danger position-absolute top-0 end-0 translate-middle rounded-pill">
-            0
-        </span>
+        <a href="{{ route('doctor.notifications.all') }}" class="position-relative d-inline-block">
+    <i class="ti ti-bell-ringing fs-5"></i>
+    <span id="notify-count" class="badge bg-danger position-absolute top-0 end-0 translate-middle rounded-pill">
+        0
+    </span>
+</a>
+
     </a>
 
     <div class="dropdown-menu dropdown-menu-end p-0" style="width:360px">
@@ -19,6 +23,8 @@
             </a>
         </div>
     </div>
+
+   
 </li>
 
 @push('scripts')
@@ -35,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch("{{ route('doctor.notifications.unread') }}", {
             headers: { 'Accept': 'application/json' }
         })
-        .then(res => res.json())
+        .then(res => res.json()) // ✅ مهم جداً
         .then(res => {
             notifyCount.innerText = res.count ?? 0;
             renderDropdown(res.data ?? []);
@@ -69,18 +75,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadNotifications();
 
     // تحميل الإشعارات عند hover أو فتح الـ dropdown
-    if(drop2){
-        // hover
+    if (drop2) {
         drop2.addEventListener('mouseenter', function() {
-            if(!loaded){
+            if (!loaded) {
                 loaded = true;
                 loadNotifications();
             }
         });
-
-        // click (Bootstrap 5)
         drop2.addEventListener('shown.bs.dropdown', function() {
-            if(!loaded){
+            if (!loaded) {
                 loaded = true;
                 loadNotifications();
             }
