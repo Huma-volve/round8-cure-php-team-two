@@ -96,8 +96,8 @@
                         </li>
                     </ul>
                 </li>
-            @endif
-            @if(Auth::guard('admin')->check())
+            
+            @elseif(Auth::guard('admin')->check())
             {{-- Admin --}}
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                     <span
