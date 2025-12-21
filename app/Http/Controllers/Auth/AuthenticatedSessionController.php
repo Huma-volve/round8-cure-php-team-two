@@ -41,14 +41,14 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        
+
 
 
         if (\App\Models\Doctor::where('email', $email)->exists()) {
             if (Auth::guard('doctor')->attempt(['email' => $email, 'password' => $password], $remember)) {
                 //  dd($password);
                 if($password === 'password'){
-                    return redirect()->route('doctor.set-password');
+                    return redirect()->route('doctor.set-password.show');
                 }
                  $request->session()->regenerate();
                  return redirect()->intended(route('doctor.dashboard', absolute: false));

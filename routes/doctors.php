@@ -34,7 +34,7 @@ Route::middleware(['auth:doctor'])
         Route::post('/appointments/{appointment}/status', [DoctorAppointmentDashboardController::class, 'updateStatus'])->name('appointments.status');
 
         Route::get('/profile', [DoctorProfileController::class, 'showProfile'])->name('profile.show');
-        
+
         Route::put('/profile', [DoctorProfileController::class, 'updateProfile'])->name('profile.update');
 
         Route::get('/reports', [DoctorDashboardController::class, 'index'])->name('dashboard.reports');
