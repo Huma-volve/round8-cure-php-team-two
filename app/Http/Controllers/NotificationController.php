@@ -49,13 +49,13 @@ class NotificationController extends Controller
     {
         $user = Auth::user();
         $unreadNotifications = DatabaseNotification::where('notifiable_id', $user->id)
-            ->where('notifiable_type', get_class($user))->wherenull('read_at')
+            ->where('notifiable_type', get_class($user))
+            ->whereNull('read_at')
             ->latest()
             ->paginate(10);
 
-
         return response()->json([
-            'count' => $unreadNotifications->count(),
+            'count' => $unreadNotifications->total(),
             'data' => NotificationResource::collection($unreadNotifications),
         ]);
 
@@ -144,7 +144,7 @@ class NotificationController extends Controller
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-       
+
         return redirect()
             ->back()
             ->with('success', 'All unread notifications marked as read');

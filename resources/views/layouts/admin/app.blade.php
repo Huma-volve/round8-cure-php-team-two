@@ -54,5 +54,6 @@
 
 <script src="{{ asset('build/assets/app-BiS2zVJo.js') }}"></script>
 @stack('js')
+@stack('scripts')
 </body>
 </html>
