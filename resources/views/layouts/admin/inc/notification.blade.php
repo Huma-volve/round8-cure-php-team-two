@@ -22,39 +22,43 @@
 </li>
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const notifyCount = document.getElementById('notify-count');
-    const notificationsList = document.getElementById('notifications-list');
-    const drop2 = document.getElementById('drop2');
-    let loaded = false;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifyCount = document.getElementById('notify-count');
+            const notificationsList = document.getElementById('notifications-list');
+            const drop2 = document.getElementById('drop2');
+            let loaded = false;
 
-    function loadNotifications() {
-        if (!notificationsList) return;
+            function loadNotifications() {
+                if (!notificationsList) return;
 
-        fetch("{{ route('doctor.notifications.unread') }}", {
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(res => res.json())
-        .then(res => {
-            notifyCount.innerText = res.count ?? 0;
-            renderDropdown(res.data ?? []);
-        })
-        .catch(() => {
-            notificationsList.innerHTML =
-                `<div class="text-center py-3 text-danger">Failed to load</div>`;
-        });
-    }
+                fetch("{{ route('doctor.notifications.unread') }}", {
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(res => res.json()).then(res => {
+                        console.log('Response:', res);
+                    })
+                    .then(res => {
+                        notifyCount.innerText = res.count ?? 0;
+                        renderDropdown(res.data ?? []);
+                    })
+                    .catch(() => {
+                        notificationsList.innerHTML =
+                            `<div class="text-center py-3 text-danger">Failed to load</div>`;
+                    });
+            }
 
-    function renderDropdown(notifications) {
-        notificationsList.innerHTML = '';
-        if (!notifications.length) {
-            notificationsList.innerHTML =
-                `<div class="text-center py-3 text-muted">No notifications</div>`;
-            return;
-        }
-        notifications.forEach(n => {
-            notificationsList.insertAdjacentHTML('beforeend', `
+            function renderDropdown(notifications) {
+                notificationsList.innerHTML = '';
+                if (!notifications.length) {
+                    notificationsList.innerHTML =
+                        `<div class="text-center py-3 text-muted">No notifications</div>`;
+                    return;
+                }
+                notifications.forEach(n => {
+                    notificationsList.insertAdjacentHTML('beforeend', `
                 <a href="#"
                    class="list-group-item list-group-item-action ${n.read_at ? '' : 'fw-semibold'}">
                     <div class="small text-muted">${n.created_at}</div>
@@ -62,38 +66,38 @@ document.addEventListener('DOMContentLoaded', function() {
                     <small class="text-muted">${n.data?.message ?? ''}</small>
                 </a>
             `);
-        });
-    }
-
-    // تحميل الإشعارات عند تحميل الصفحة
-    loadNotifications();
-
-    // تحميل الإشعارات عند hover أو فتح الـ dropdown
-    if(drop2){
-        // hover
-        drop2.addEventListener('mouseenter', function() {
-            if(!loaded){
-                loaded = true;
-                loadNotifications();
+                });
             }
-        });
 
-        // click (Bootstrap 5)
-        drop2.addEventListener('shown.bs.dropdown', function() {
-            if(!loaded){
-                loaded = true;
-                loadNotifications();
+            // تحميل الإشعارات عند تحميل الصفحة
+            loadNotifications();
+
+            // تحميل الإشعارات عند hover أو فتح الـ dropdown
+            if (drop2) {
+                // hover
+                drop2.addEventListener('mouseenter', function() {
+                    if (!loaded) {
+                        loaded = true;
+                        loadNotifications();
+                    }
+                });
+
+                // click (Bootstrap 5)
+                drop2.addEventListener('shown.bs.dropdown', function() {
+                    if (!loaded) {
+                        loaded = true;
+                        loadNotifications();
+                    }
+                });
             }
-        });
-    }
 
-    // الوقت الحقيقي باستخدام Laravel Echo
-    if (typeof Echo !== 'undefined') {
-        Echo.private(`App.Models.Doctor.{{ auth()->guard('doctor')->id() }}`)
-            .notification((notification) => {
-                notifyCount.innerText = parseInt(notifyCount.innerText || 0) + 1;
-                if (notificationsList) {
-                    notificationsList.insertAdjacentHTML('afterbegin', `
+            // الوقت الحقيقي باستخدام Laravel Echo
+            if (typeof Echo !== 'undefined') {
+                Echo.private(`App.Models.Doctor.{{ auth()->guard('doctor')->id() }}`)
+                    .notification((notification) => {
+                        notifyCount.innerText = parseInt(notifyCount.innerText || 0) + 1;
+                        if (notificationsList) {
+                            notificationsList.insertAdjacentHTML('afterbegin', `
                         <a href="#"
                            class="list-group-item list-group-item-action fw-semibold">
                             <div class="small text-muted">Just now</div>
@@ -101,9 +105,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <small class="text-muted">${notification.data?.message ?? ''}</small>
                         </a>
                     `);
-                }
-            });
-    }
-});
-</script>
+                        }
+                    });
+            }
+        });
+    </script>
 @endpush
