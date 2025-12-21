@@ -15,6 +15,7 @@ use App\Services\Auth\AuthOtpService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Laravel\Reverb\Loggers\Log;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -34,7 +35,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'phone' => $data['phone'],
             'email' => $data['email'],
-            'password' => Hash::make("password"),
+            'password' => Hash::make($data['password']),
         ]);
         $user->assignRole('patient');
         $otpResult = $this->authOtpService->sendOtp($user->id, $user->phone);
@@ -48,7 +49,6 @@ class AuthController extends Controller
     {
         $creds = $request->validated();
         $user = User::where('phone', $creds['phone'])->first();
-
         if (!$user || !Hash::check($creds['password'], $user->password)) {
             return apiResponse(false, 'Invalid login details', null, 401);
         }
