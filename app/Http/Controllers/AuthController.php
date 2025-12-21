@@ -34,7 +34,7 @@ class AuthController extends Controller
             'name' => $data['name'],
             'phone' => $data['phone'],
             'email' => $data['email'],
-            'password' => Hash::make("password"),
+            'password' => Hash::make($data['password']),
         ]);
         $user->assignRole('patient');
         $otpResult = $this->authOtpService->sendOtp($user->id, $user->phone);
