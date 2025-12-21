@@ -55,12 +55,12 @@ Route::middleware('auth')->group(function () {
 });
 
 
-Route::middleware('auth:admin')->group(function () {
-    Route::post('admin/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('admin.logout');
-});
+// Route::middleware('auth:admin')->group(function () {
+//     Route::post('admin/logout', [AuthenticatedSessionController::class, 'destroy'])
+//         ->name('admin.logout');
+// });
 
-Route::middleware('auth:doctor')->group(function () {
-    Route::post('doctor/logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('doctor.logout');
-});
+// Route::middleware('auth:doctor')->group(function () {
+//     Route::post('doctor/logout', [AuthenticatedSessionController::class, 'destroy'])
+//         ->name('doctor.logout');
+// });
