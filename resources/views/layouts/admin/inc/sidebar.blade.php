@@ -171,7 +171,7 @@
 
             {{-- contacts links --}}
             <li class="menu-item">
-                <a href="#" class="menu-link">
+                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
                     <i class="menu-icon icon-base ri ri-notification-line"></i>
                     <div data-i18n="Basic">Notifications</div>
                 </a>
