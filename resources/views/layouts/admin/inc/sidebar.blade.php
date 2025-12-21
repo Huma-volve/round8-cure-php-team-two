@@ -82,44 +82,17 @@
                 </ul>
             </li>
 
-            {{-- Notifications --}}
-            <li class="menu-item">
-                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
-                    <i class="menu-icon icon-base ri ri-notification-line"></i>
-                    <div>Notifications</div>
-                </a>
-            </li>
         @endif
 
-        {{-- Contacts --}}
+        {{-- Notifications --}}
         <li class="menu-item">
-            <a href="#" class="menu-link">
-                <i class="menu-icon icon-base ri ri-mail-line"></i>
-                <div>Contacts</div>
+            <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
+                <i class="menu-icon icon-base ri ri-notification-line"></i>
+                <div>Notifications</div>
             </a>
         </li>
 
-        {{-- Settings --}}
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon icon-base ri ri-lock-line"></i>
-                <div>Settings</div>
-            </a>
 
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="#" class="menu-link">
-                        Settings
-                    </a>
-                </li>
-
-                <li class="menu-item">
-                    <a href="#" class="menu-link">
-                        Sites
-                    </a>
-                </li>
-            </ul>
-        </li>
 
         {{-- ================= LOGOUT ================= --}}
         @if(Auth::guard('admin')->check())
