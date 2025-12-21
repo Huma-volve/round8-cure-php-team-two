@@ -51,7 +51,7 @@
                     </li>
                 </ul>
             </li>
-        {{-- ================= DOCTOR ================= --}}
+            {{-- ================= DOCTOR ================= --}}
         @elseif(Auth::guard('doctor')->check())
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -80,14 +80,14 @@
                 </ul>
             </li>
 
-            <li class="menu-item">
-                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
-                    <i class="menu-icon icon-base ri ri-notification-line"></i>
-                    <div>Notifications</div>
-                </a>
-            </li>
 
-        @endif    
+        @endif
+        <li class="menu-item">
+            <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
+                <i class="menu-icon icon-base ri ri-notification-line"></i>
+                <div>Notifications</div>
+            </a>
+        </li>
 
         {{-- Notifications --}}
 
@@ -105,6 +105,6 @@
                 </li>
             </form>
         @endif
-                            
+
     </ul>
 </aside>
