@@ -51,10 +51,8 @@
                     </li>
                 </ul>
             </li>
-        @endif
-
         {{-- ================= DOCTOR ================= --}}
-        @if(Auth::guard('doctor')->check())
+        @elseif(Auth::guard('doctor')->check())
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-blogger-line"></i>
@@ -82,34 +80,31 @@
                 </ul>
             </li>
 
-        @endif
+            <li class="menu-item">
+                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-notification-line"></i>
+                    <div>Notifications</div>
+                </a>
+            </li>
+
+        @endif    
 
         {{-- Notifications --}}
-        <li class="menu-item">
-            <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
-                <i class="menu-icon icon-base ri ri-notification-line"></i>
-                <div>Notifications</div>
-            </a>
-        </li>
-
 
 
         {{-- ================= LOGOUT ================= --}}
-        @if(Auth::guard('admin')->check())
-            <form action="{{ route('admin.logout') }}" method="POST">
-                @elseif(Auth::guard('doctor')->check())
-                    <form action="{{ route('doctor.logout') }}" method="POST">
-                        @else
-                            <form action="{{ route('logout') }}" method="POST">
-                                @endif
-                                @csrf
-                                <li class="menu-item">
-                                    <button type="submit" class="menu-link">
-                                        <i class="menu-icon icon-base ri ri-shut-down-line"></i>
-                                        <div>Logout</div>
-                                    </button>
-                                </li>
-                            </form>
-
+        @if(Auth::guard('admin')->check() || Auth::guard('doctor')->check())
+            <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                @method('post')
+                <li class="menu-item">
+                    <button type="submit" class="menu-link">
+                        <i class="menu-icon icon-base ri ri-shut-down-line"></i>
+                        <div>Logout</div>
+                    </button>
+                </li>
+            </form>
+        @endif
+                            
     </ul>
 </aside>
