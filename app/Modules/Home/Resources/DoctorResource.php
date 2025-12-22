@@ -12,7 +12,11 @@ class DoctorResource extends JsonResource
         return [
             'id'            => $this->id,
             'name'          => $this->name,
-            'image'         => $this->image,
+            'image' => $this->image
+                ? (filter_var($this->image, FILTER_VALIDATE_URL)
+                    ? $this->image
+                    : asset($this->image))
+                : asset('assets/admin/img/avatars/1.png'),
             'hospital_name' => $this->hospital_name,
             'specialty_id'  => $this->specialty_id,
             'specialty'     => new SpecialtyResource($this->whenLoaded('specialty')),

@@ -23,8 +23,11 @@ class DoctorDetailsResource extends JsonResource
             'consultation_fee'     => number_format($this->price, 2),
             'phone'                => $this->phone ?? null,
             'email'                => $this->email ?? null,
-            'profile_image'        => $this->image ? asset('storage/' . $this->image) : null,
-
+            'image' => $this->image
+                ? (filter_var($this->image, FILTER_VALIDATE_URL)
+                    ? $this->image
+                    : asset($this->image))
+                : asset('assets/admin/img/avatars/1.png'),
             'is_favorite' => auth('sanctum')->check()
                 ? \DB::table('favorites')
                     ->where('doctor_id', $this->id)
