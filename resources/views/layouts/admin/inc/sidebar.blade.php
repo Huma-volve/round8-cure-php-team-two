@@ -3,10 +3,10 @@
         <a href="#" class="app-brand-link">
 
             <span class="app-brand-text demo menu-text fw-semibold ms-2">
-                @if(Auth::guard('admin')->check())
-                Admin News
+                @if (Auth::guard('admin')->check())
+                    Admin News
                 @elseif(Auth::guard('doctor')->check())
-                Doctor News
+                    Doctor News
                 @endif
 
             </span>
@@ -28,14 +28,8 @@
                 <div>Dashboard</div>
             </a>
         </li>
-
         {{-- ================= ADMIN ================= --}}
-
-        
-
-
         @if (Auth::guard('admin')->check())
-
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-user-2-line"></i>
@@ -44,31 +38,16 @@
 
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="{{ route('admin.bookings.index') }}" class="menu-link">
-                            Bookings
-                        </a>
+                        <a href="{{ route('admin.bookings.index') }}" class="menu-link">Bookings</a>
                     </li>
-
                     <li class="menu-item">
-                        <a href="{{ route('admin.dashboard.reports') }}" class="menu-link">
-                            Reports
-                        </a>
+                        <a href="{{ route('admin.dashboard.reports') }}" class="menu-link">Reports</a>
                     </li>
-
                     <li class="menu-item">
-                        <a href="{{ route('admin.doctor.index') }}" class="menu-link">
-                            Doctors
-                        </a>
+                        <a href="{{ route('admin.doctor.index') }}" class="menu-link">Doctors</a>
                     </li>
+                    
                 </ul>
-
-            </li>
-
-            <li class="menu-item">
-                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
-                    <i class="menu-icon icon-base ri ri-notification-line"></i>
-                    <div>Notifications</div>
-                </a>
             </li>
 
             {{-- ================= DOCTOR ================= --}}
@@ -81,33 +60,24 @@
 
                 <ul class="menu-sub">
                     <li class="menu-item">
-                        <a href="{{ route('doctor.appointments.index') }}" class="menu-link">
-                            Appointments
-                        </a>
+                        <a href="{{ route('doctor.appointments.index') }}" class="menu-link">Appointments</a>
                     </li>
-
                     <li class="menu-item">
-                        <a href="{{ route('doctor.times.index') }}" class="menu-link">
-                            Doctor Times
-                        </a>
+                        <a href="{{ route('doctor.times.index') }}" class="menu-link">Doctor Times</a>
                     </li>
-
                     <li class="menu-item">
-                        <a href="{{ route('doctor.dashboard.reports') }}" class="menu-link">
-                            Reports
+                        <a href="{{ route('doctor.dashboard.reports') }}" class="menu-link">Reports</a>
+                    </li>
+                    <li class="menu-item">
+                        <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
+                            <i class="menu-icon icon-base ri ri-notification-line"></i>
+                            <div>Notifications </div>
                         </a>
                     </li>
                 </ul>
             </li>
-
-            <li class="menu-item">
-                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
-                    <i class="menu-icon icon-base ri ri-notification-line"></i>
-                    <div>Notifications</div>
-                </a>
-            </li>
         @endif
-        
+
 
 
         {{-- Notifications --}}
