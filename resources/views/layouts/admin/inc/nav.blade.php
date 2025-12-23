@@ -19,7 +19,6 @@
 
             
             @auth
-
                 @include('layouts.admin.inc.notification')
             @endauth
             </div>

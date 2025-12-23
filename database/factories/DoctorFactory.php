@@ -27,7 +27,7 @@ class DoctorFactory extends Factory
             'email_verified_at' => now(),
             'password' => 'password',
             'phone' => $this->faker->phoneNumber(),
-            'image' => $this->faker->imageUrl(),
+            'image' => 'assets/admin/img/avatars/' . $this->faker->numberBetween(1, 7) . '.png',
             'status' => true,
             'location' => [
                 'lat' => $this->faker->latitude(),
