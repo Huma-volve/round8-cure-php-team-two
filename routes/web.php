@@ -9,10 +9,17 @@ use App\Http\Controllers\Doctor\DoctorDashboardController;
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
-
-Route::get('/', function () {
-    return view('layouts.admin.app');
+Route::get('/', function (){
+    if (!Auth::guard('admin')->check() && !Auth::guard('doctor')->check()) {
+        return redirect()->route('login');
+    }elseif (Auth::guard('admin')->check() && !Auth::guard('doctor')->check()) {
+        return redirect()->route('admin.dashboard');
+    }elseif (!Auth::guard('admin')->check() && Auth::guard('doctor')->check()) {
+        return redirect()->route('doctor.dashboard');
+    }
+    
 });
 
 Route::get('/dashboard', function () {

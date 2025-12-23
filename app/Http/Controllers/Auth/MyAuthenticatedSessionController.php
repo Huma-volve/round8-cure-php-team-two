@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
-class AuthenticatedSessionController extends Controller
+class MyAuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
      */
     public function create(): View
     {
+        
         return view('auth.login');
     }
 
@@ -47,12 +48,12 @@ class AuthenticatedSessionController extends Controller
         if (\App\Models\Doctor::where('email', $email)->exists()) {
             if (Auth::guard('doctor')->attempt(['email' => $email, 'password' => $password], $remember)) {
                 //  dd($password);
-                if($password === 'password'){
+                if ($password === 'password') {
                     return redirect()->route('doctor.set-password.show');
                 }
-                 $request->session()->regenerate();
-                 return redirect()->intended(route('doctor.dashboard', absolute: false));
-             }
+                $request->session()->regenerate();
+                return redirect()->intended(route('doctor.dashboard', absolute: false));
+            }
         }
 
 
@@ -60,7 +61,6 @@ class AuthenticatedSessionController extends Controller
         throw \Illuminate\Validation\ValidationException::withMessages([
             'email' => trans('auth.failed'),
         ]);
-
     }
 
     /**
@@ -68,22 +68,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        if (Auth::guard('admin')->check()) {
-            Auth::guard('admin')->logout();
-        } elseif (Auth::guard('doctor')->check()) {
-            Auth::guard('doctor')->logout();
-        } else {
-            Auth::guard('web')->logout();
+        
+        foreach (['admin', 'doctor', 'web'] as $guard) {
+            if (Auth::guard($guard)->check()) {
+                Auth::guard($guard)->logout();
+                break;
+            }
         }
-        // Ideally logout all just to be safe?
-        // Auth::guard('web')->logout();
-        // Auth::guard('admin')->logout();
-        // Auth::guard('doctor')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }

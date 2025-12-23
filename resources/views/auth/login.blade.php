@@ -1,4 +1,5 @@
     @include('layouts.admin.inc.head')
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
     <div class="container my-5 mx-auto p-5 border rounded shadow" style="max-width: 400px;">
@@ -6,7 +7,7 @@
     
     <form method="POST" action="{{ route('login') }}">
         @csrf
-
+        @method('post')
         <!-- Email Address -->
         <div>
             <x-input-label for="email" :value="__('Email')" />
