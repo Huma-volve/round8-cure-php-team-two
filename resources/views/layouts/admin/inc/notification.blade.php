@@ -1,11 +1,14 @@
 <li class="nav-item dropdown" id="drop2">
-    <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
+     @if (Auth::guard('doctor')->check()) 
+     <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown">
         <i class="ti ti-bell-ringing fs-5"></i>
         <a href="{{ route('doctor.notifications.all') }}" class="position-relative d-inline-block">
     <i class="ti ti-bell-ringing fs-5"></i>
-    <span id="notify-count" class="badge bg-danger position-absolute top-0 end-0 translate-middle rounded-pill">
-        0
-    </span>
+  
+        <span id="notify-count" class="badge bg-danger position-absolute top-0 end-0 translate-middle rounded-pill">
+            0
+        </span>
+    @endif
 </a>
 
     </a>
