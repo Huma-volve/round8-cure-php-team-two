@@ -30,8 +30,12 @@
         </li>
 
         {{-- ================= ADMIN ================= --}}
+
         
-        @if(Auth::guard('admin')->check())
+
+
+        @if (Auth::guard('admin')->check())
+
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-user-2-line"></i>
@@ -57,8 +61,17 @@
                         </a>
                     </li>
                 </ul>
+
             </li>
-        {{-- ================= DOCTOR ================= --}}
+
+            <li class="menu-item">
+                <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
+                    <i class="menu-icon icon-base ri ri-notification-line"></i>
+                    <div>Notifications</div>
+                </a>
+            </li>
+
+            {{-- ================= DOCTOR ================= --}}
         @elseif(Auth::guard('doctor')->check())
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -87,20 +100,21 @@
                 </ul>
             </li>
 
-            
-            @endif    
             <li class="menu-item">
                 <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
                     <i class="menu-icon icon-base ri ri-notification-line"></i>
                     <div>Notifications</div>
                 </a>
             </li>
-            
+        @endif
+        
+
+
         {{-- Notifications --}}
 
 
         {{-- ================= LOGOUT ================= --}}
-        @if(Auth::guard('admin')->check() || Auth::guard('doctor')->check())
+        @if (Auth::guard('admin')->check() || Auth::guard('doctor')->check())
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 @method('post')
@@ -112,6 +126,6 @@
                 </li>
             </form>
         @endif
-                            
+
     </ul>
 </aside>
