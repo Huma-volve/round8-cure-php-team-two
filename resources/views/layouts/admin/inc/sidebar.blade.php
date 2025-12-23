@@ -64,12 +64,12 @@
 
             </li>
 
-            <li class="menu-item">
+            {{-- <li class="menu-item">
                 <a href="{{ route('doctor.notifications.all') }}" class="menu-link">
                     <i class="menu-icon icon-base ri ri-notification-line"></i>
                     <div>Notifications</div>
                 </a>
-            </li>
+            </li> --}}
 
             {{-- ================= DOCTOR ================= --}}
         @elseif(Auth::guard('doctor')->check())
