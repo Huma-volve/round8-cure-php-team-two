@@ -1,8 +1,14 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="#" class="app-brand-link">
+
             <span class="app-brand-text demo menu-text fw-semibold ms-2">
+                @if(Auth::guard('admin')->check())
                 Admin News
+                @elseif(Auth::guard('doctor')->check())
+                Doctor News
+                @endif
+
             </span>
         </a>
 
@@ -24,7 +30,12 @@
         </li>
 
         {{-- ================= ADMIN ================= --}}
+
+        
+
+
         @if (Auth::guard('admin')->check())
+
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon icon-base ri ri-user-2-line"></i>
