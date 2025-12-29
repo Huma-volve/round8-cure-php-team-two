@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Chat\Favorite\FavoriteController;
 use App\Http\Controllers\Api\Chat\Message\MessageController;
 use App\Http\Controllers\Api\Chat\Room\ChatController;
 use App\Http\Controllers\Api\Chat\Search\SearchController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\User\PatientController;
 use App\Http\Controllers\AuthController;
@@ -113,3 +114,6 @@ Route::prefix('v1')->group(function () {
     });
 
 });
+
+
+Route::post('v1/contact-us', [ContactController::class, 'store']);
