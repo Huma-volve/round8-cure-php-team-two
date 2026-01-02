@@ -26,14 +26,12 @@ class StripeController extends Controller
 
             Stripe::setApiKey(config('services.stripe.secret_key'));
 
-            $amount = max(floatval($appointment->price), 0.5);
+            $amount = max((float)$appointment->price, 0.5);
 
             $paymentIntent = PaymentIntent::create([
-                'amount' => intval($amount * 100),
+                'amount' => (int)($amount * 100),
                 'currency' => 'usd',
-                'automatic_payment_methods' => [
-                    'enabled' => true,
-                ],
+                'confirmation_method' => 'manual',
                 'metadata' => [
                     'appointment_id' => $appointment->id,
                     'user_id' => $user->id,
@@ -53,8 +51,48 @@ class StripeController extends Controller
                 'payment_id' => $payment->id,
                 'publishableKey' => config('services.stripe.public_key'),
             ]);
+
         } catch (\Exception $e) {
-            return apiResponse(false, $e->getMessage(), null, 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function confirmPayment(Request $request)
+    {
+        $request->validate([
+            'payment_method_id' => 'required|string',
+            'appointment_id' => 'required|integer|exists:appointments,id',
+        ]);
+
+        $user = $request->user();
+        $appointment = Appointment::where('id', $request->appointment_id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        $payment = Payment::where('appointment_id', $appointment->id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
+
+        try {
+            Stripe::setApiKey(config('services.stripe.secret_key'));
+
+            // Confirm PaymentIntent باستخدام payment_method_id
+            $intent = PaymentIntent::retrieve($payment->stripe_payment_intent_id);
+            $intent->confirm(['payment_method' => $request->payment_method_id]);
+
+            // تحديث حالة الدفع
+            $status = $intent->status;
+            if ($status === 'succeeded') {
+                $payment->update(['status' => 'paid']);
+                $appointment->update(['status' => 'paid', 'payment_id' => $payment->id]);
+            }
+
+            return apiResponse($status === 'succeeded', 'Payment status updated', [
+                'stripe_status' => $status
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
         }
     }
 }
