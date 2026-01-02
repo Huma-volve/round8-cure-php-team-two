@@ -11,7 +11,6 @@ use Stripe\PaymentIntent;
 
 class StripeController extends Controller
 {
-    // إنشاء PaymentIntent
     public function createPaymentIntent(Request $request)
     {
         $request->validate([
@@ -30,19 +29,14 @@ class StripeController extends Controller
             $amount = max((float)$appointment->price, 0.5);
 
             $paymentIntent = PaymentIntent::create([
-                'amount' => (int)($amount * 100),
+                'amount' => (int)round($amount * 100),
                 'currency' => 'usd',
-                'automatic_payment_methods' => [
-                    'enabled' => true,
-                    'allow_redirects' => 'never', // يمنع أي redirect
-                ],
+                'automatic_payment_methods' => ['enabled' => true], // remove allow_redirects
                 'metadata' => [
                     'appointment_id' => $appointment->id,
                     'user_id' => $user->id,
                 ],
             ]);
-
-
 
             $payment = Payment::create([
                 'price' => $appointment->price,
@@ -52,19 +46,18 @@ class StripeController extends Controller
                 'stripe_payment_intent_id' => $paymentIntent->id,
             ]);
 
-            return response()->json([
-                'success' => true,
+            return apiResponse(true, 'PaymentIntent created successfully', [
                 'client_secret' => $paymentIntent->client_secret,
                 'payment_id' => $payment->id,
                 'publishableKey' => config('services.stripe.public_key'),
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+            \Log::error('Stripe createPaymentIntent error: ' . $e->getMessage());
+            return apiResponse(false, 'Failed to create PaymentIntent: ' . $e->getMessage(), null, 500);
         }
     }
 
-    // تأكيد الدفع
     public function confirmPayment(Request $request)
     {
         $request->validate([
@@ -73,6 +66,7 @@ class StripeController extends Controller
         ]);
 
         $user = $request->user();
+
         $appointment = Appointment::where('id', $request->appointment_id)
             ->where('user_id', $user->id)
             ->firstOrFail();
@@ -81,6 +75,10 @@ class StripeController extends Controller
             ->where('user_id', $user->id)
             ->firstOrFail();
 
+        if ($payment->status === 'paid') {
+            return apiResponse(false, 'Payment already completed', null, 400);
+        }
+
         try {
             Stripe::setApiKey(config('services.stripe.secret_key'));
 
@@ -88,20 +86,18 @@ class StripeController extends Controller
             $intent = PaymentIntent::retrieve($payment->stripe_payment_intent_id);
             $intent->confirm(['payment_method' => $request->payment_method_id]);
 
-            $status = $intent->status;
-
-            if ($status === 'succeeded') {
+            if ($intent->status === 'succeeded') {
                 $payment->update(['status' => 'paid']);
                 $appointment->update(['status' => 'paid']);
             }
 
-            return response()->json([
-                'success' => $status === 'succeeded',
-                'stripe_status' => $status
+            return apiResponse($intent->status === 'succeeded', 'Payment confirmation status', [
+                'stripe_status' => $intent->status,
             ]);
 
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 400);
+            \Log::error('Stripe confirmPayment error: ' . $e->getMessage());
+            return apiResponse(false, 'Failed to confirm payment: ' . $e->getMessage(), null, 400);
         }
     }
 }
