@@ -31,7 +31,10 @@ class StripeController extends Controller
             $paymentIntent = PaymentIntent::create([
                 'amount' => (int)round($amount * 100),
                 'currency' => 'usd',
-                'automatic_payment_methods' => ['enabled' => true], // remove allow_redirects
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                    'allow_redirects' => 'never',
+                ],
                 'metadata' => [
                     'appointment_id' => $appointment->id,
                     'user_id' => $user->id,
